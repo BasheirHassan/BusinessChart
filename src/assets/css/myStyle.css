@@ -1,0 +1,158 @@
+
+@font-face {
+    font-family: Cairo;
+    src: url('@/assets/fonts/Cairo-SemiBold.ttf');
+
+}
+
+body {
+    font-family: Cairo, Helvetica, Arial, sans-serif;
+    user-select: none;
+    overflow-x: hidden; /* Hide vertical scrollbar */
+
+}
+
+* {
+    font-size: 100%;
+    font-family: Cairo, Arial, serif;
+}
+
+
+.chartBar {
+    background: url(@/assets/icons/icons8-bar_chart.png) no-repeat;
+    float: left;
+    width: 40px;
+    height: 20px;
+}
+
+
+.chartColumn {
+    background: url(@/assets/icons/icons8-bar_chart.png) no-repeat;
+    float: left;
+    width: 40px;
+    height: 20px;
+}
+
+
+.chartReader {
+    background: url(@/assets/icons/reader.png) no-repeat;
+    float: left;
+    width: 40px;
+    height: 20px;
+}
+
+
+.chartArea {
+    background: url(@/assets/icons/area.png) no-repeat;
+    float: left;
+    width: 24px;
+    height: 24px;
+}
+
+
+.chartLine {
+    background: url(@/assets/icons/icons8-line_chart.png) no-repeat;
+    float: left;
+    width: 40px;
+    height: 20px;
+}
+
+.chartStackBar {
+    background: url(@/assets/icons/stackbar.png) no-repeat;
+    float: left;
+    width: 40px;
+    height: 20px;
+}
+
+
+.heatmap {
+    background: url(@/assets/icons/heatmap.png) no-repeat;
+    float: left;
+    width: 25px;
+    height: 25px;
+}
+
+.pie {
+    background: url(@/assets/icons/pie.png) no-repeat;
+    float: left;
+    width: 24px;
+    height: 24px;
+}
+.youtubeIcon {
+    background: url(@/assets/icons/youtubeicon-64.png) no-repeat;
+    float: left;
+    width: 64px;
+    height: 64px;
+}
+
+
+.mixed {
+    background: url(../icons/mixed.png) no-repeat;
+    float: left;
+    width: 40px;
+    height: 20px;
+}
+
+
+.back-to-top {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    display: none;
+}
+
+.blur {
+    -webkit-filter: blur(5px); /* Safari 6.0 - 9.0 */
+    filter: blur(5px);
+}
+
+.vhh-80 {
+    height: 80% !important;
+}
+
+
+.vhh-90 {
+    height: 90% !important;
+}
+
+.vhh-95 {
+    height: 95% !important;
+}
+
+.vhh-50 {
+    height: 50% !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

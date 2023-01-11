@@ -1,0 +1,22 @@
+/.idea/
+/node_modules/
+!/dist/
+!/dist/**
+dist/
+*.map
+src/assets/tsModels/*.js
+electron/**/*.js
+logs
+src/samples/*.js
+src/router.js
+src/router.js.map
+/vite.config.js
+/infoUpdate.json
+
+src/*.js
+/src/*.js
+
+
+
+# Project exclude paths
+/vite.config.d.ts

@@ -1,0 +1,100 @@
+{
+  "name": "business-chart",
+  "version": "23.1.15",
+  "description": "Business Chart",
+  "productName": "Business Chart",
+  "main": "dist/electron/main/index.js",
+  "private": true,
+  "scripts": {
+    "dev": "vite && vue-tsc --noEmit ",
+    "build": "vue-tsc --noEmit   && vite build && electron-builder --win --x64 -p always"
+  },
+  "engines": {
+    "node": ">=14.17.0"
+  },
+  "author": "Basheir Hassan",
+  "license": "ISC",
+  "build": {
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "./src/assets/icons/iconApp.ico",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "private": true,
+        "owner": "BasheirHassan",
+        "repo": "BusinessChart",
+        "token": "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"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "electron": "^22.0.0",
+    "electron-builder": "^23.6.0",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-packager": "^17.1.1",
+    "electron-vite": "^1.0.17",
+    "element-plus": "^2.2.28",
+    "prettier": "^2.8.2",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.4",
+    "vite-plugin-electron": "^0.9.3",
+    "vite-plugin-resolve": "^2.3.0",
+    "vue": "^3.2.45",
+    "vue-router": "^4.1.6",
+    "vue-tsc": "^1.0.22"
+  },
+  "env": {
+    "VITE_DEV_SERVER_HOST": "127.0.0.1",
+    "VITE_DEV_SERVER_PORT": 3344
+  },
+  "keywords": [
+    "Business",
+    "Chart"
+  ],
+  "dependencies": {
+    "anima-counters": "^1.1.1",
+    "anychart": "^8.11.0",
+    "app-root-path": "^3.1.0",
+    "bootstrap": "^5.2.3",
+    "collect.js": "^4.34.3",
+    "data-store": "^4.0.3",
+    "decimal.js": "^10.4.3",
+    "dom-to-image-more": "^2.13.1",
+    "electron-log": "^4.4.8",
+    "electron-progressbar": "^2.0.1",
+    "electron-root-path": "^1.1.0",
+    "electron-settings": "^4.0.2",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^5.3.0",
+    "file-saver": "^2.0.5",
+    "jquery": "^3.6.3",
+    "knex": "^2.4.0",
+    "local-devices": "^4.0.0",
+    "lodash": "^4.17.21",
+    "lodash.uniqueid": "^4.0.1",
+    "md5": "^2.3.0",
+    "moment": "^2.29.4",
+    "mysql2": "^2.3.3",
+    "numbro": "^2.3.6",
+    "progress": "^2.0.3",
+    "r": "^0.0.5",
+    "serial-number": "^1.3.0",
+    "tafgeetjs": "^2.1.0",
+    "tree-with-array": "^1.0.1",
+    "vue-number-animation": "^1.1.2",
+    "vue3-autocounter": "^1.0.6",
+    "vue3-treeselect": "^0.1.10"
+  }
+}
