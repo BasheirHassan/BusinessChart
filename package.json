@@ -1,6 +1,6 @@
 {
   "name": "business-chart",
-  "version": "23.1.15",
+  "version": "23.1.16",
   "description": "Business Chart",
   "productName": "Business Chart",
   "main": "dist/electron/main/index.js",
@@ -10,7 +10,7 @@
     "build": "vue-tsc --noEmit   && vite build && electron-builder --win --x64 -p always"
   },
   "engines": {
-    "node": ">=14.17.0"
+    "node": ">=18.0.0"
   },
   "author": "Basheir Hassan",
   "license": "ISC",
