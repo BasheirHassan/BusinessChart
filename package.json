@@ -1,6 +1,6 @@
 {
   "name": "business-chart",
-  "version": "23.1.16",
+  "version": "23.1.17",
   "description": "Business Chart",
   "productName": "Business Chart",
   "main": "dist/electron/main/index.js",

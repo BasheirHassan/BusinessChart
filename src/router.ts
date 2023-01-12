@@ -24,7 +24,10 @@ const router = createRouter({
         {
             path: '/sales/monthly',
             name: 'salesMonthly',
-            meta: {title: 'مبيعات شهرية'},
+            meta: {title:
+                    'مبيعات شهرية',
+                helpUrl:"https://www.youtube.com/watch?v=gHMc0U1NXqo"
+            },
             component: () => import('@/components/sales/Monthly.vue')
         },
         {
