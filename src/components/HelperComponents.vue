@@ -88,6 +88,8 @@ export default {
     },
     findHelpUrl() {
       // this.$refs.yotBtn.onclick = window.open("yotubeUrls",'_blank');
+      console.log(this.$route, ' this.$route');
+
       let routeName = collect(this.$route);
       let meta = routeName.get('meta');
       let helpUrl = collect(meta).has('helpUrl');

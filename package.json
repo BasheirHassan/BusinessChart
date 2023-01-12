@@ -1,6 +1,6 @@
 {
   "name": "business-chart",
-  "version": "23.1.21",
+  "version": "23.1.22",
   "description": "Business Chart",
   "productName": "Business Chart",
   "main": "dist/electron/main/index.js",
@@ -86,7 +86,7 @@
     "lodash.uniqueid": "^4.0.1",
     "md5": "^2.3.0",
     "moment": "^2.29.4",
-    "mysql2": "^2.3.3",
+    "mysql2": "^3.0.0",
     "numbro": "^2.3.6",
     "progress": "^2.0.3",
     "r": "^0.0.5",
