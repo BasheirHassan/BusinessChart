@@ -1,6 +1,8 @@
 <template>
 
-
+  <HelperComponents title-helper="معلومة" v-show="true" :progres-percinteg="0">
+    <p>مقارنة مبيعات - مشتريات شهرية</p>
+  </HelperComponents>
   <el-row>
     <el-col :span="24">
       <TreeComponent is-invoice-or-items="invoice" @selectItems="selectItems"></TreeComponent>
