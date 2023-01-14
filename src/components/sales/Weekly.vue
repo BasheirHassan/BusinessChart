@@ -1,4 +1,10 @@
 <template>
+
+
+  <HelperComponents title-helper="معلومة" v-show="true" :progres-percinteg="100">
+    <p>مقارنة مبيعات - مشتريات اسبوعية</p>
+  </HelperComponents>
+
   <el-row>
     <el-col :span="24">
       <TreeComponent is-invoice-or-items="invoice" @selectItems="selectItems"></TreeComponent>
@@ -24,6 +30,7 @@
 <script>
 import TreeComponent from '@/components/TreeComponent.vue';
 import CardChartComponents from '@/components/CardChartComponents.vue';
+import HelperComponents from '@/components/HelperComponents.vue';
 
 import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
@@ -32,7 +39,7 @@ import {toRaw} from 'vue';
 
 export default {
   name      : 'SalesWeekly',
-  components: {CardChartComponents, TreeComponent},
+  components: {CardChartComponents, TreeComponent,HelperComponents},
 
   data() {
     return {

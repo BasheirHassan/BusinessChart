@@ -33,7 +33,9 @@ const router = createRouter({
         {
             path: '/sales/weekly',
             name: 'salesWeekly',
-            meta: {title: 'مبيعات اسبوعية'},
+            meta: {title: 'مبيعات اسبوعية',
+            helpUrl:"https://www.youtube.com/watch?v=d-j6Lt-hRqs"
+            },
             component: () => import('@/components/sales/Weekly.vue')
         },
         {
