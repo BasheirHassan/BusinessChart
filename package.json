@@ -1,6 +1,6 @@
 {
   "name": "business-chart",
-  "version": "23.1.30",
+  "version": "23.1.31",
   "description": "Business Chart",
   "productName": "Business Chart",
   "main": "dist/electron/main/index.js",
@@ -33,7 +33,7 @@
         "private": true,
         "owner": "BasheirHassan",
         "repo": "BusinessChart",
-        "token": "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"
+        "token": "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"
       }
     ]
   },

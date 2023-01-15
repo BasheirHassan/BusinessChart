@@ -64,7 +64,7 @@ export default class UpdaterClass {
         })
         autoUpdater.on('error', (err:any) => {
             if (!progressBar.isCompleted()) {
-                progressBar.detail += "\n" + 'Error in auto-updater. ' + err;
+                progressBar.detail += "\n" + 'لايمكن تحديث الرجاء المحاولة لاحقا' + err;
                 progressBar.setCompleted();
             }
         })
