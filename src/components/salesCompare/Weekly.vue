@@ -8,7 +8,7 @@
 
   <EmptyDataComponents v-show="showEmptyData"/>
 
-  <InfoStepsComponents :active="activeWeeks" type-step="weeks"/>
+  <InfoStepsComponents :active="activeWeeks" :data-step='weeks' type-step="weeks"/>
   <InfoDataMaxComponents v-show="!showEmptyData" :data-json="isMaxs"/>
 
 
@@ -76,6 +76,7 @@ export default {
 
     this.weeks = await this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.sales);
     this.loadingData();
+
 
     if (this.weeks.length > 0) {
       this.activeWeeks = toRaw(collect(this.weeks).last()).weeks || 0;

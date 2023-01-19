@@ -7,7 +7,7 @@
 
 <EmptyDataComponents v-show="showEmptyData"/>
 <InfoDataMaxComponents v-show="!showEmptyData"  :data-json="isMaxs"/>
-<InfoStepsComponents v-show="!showEmptyData" type-step="dayInMonth"/>
+<InfoStepsComponents v-show="!showEmptyData"  :data-step='days' type-step="dayInMonth"/>
 
   <template v-for="(item, index) in days">
     <el-row class="p-1">

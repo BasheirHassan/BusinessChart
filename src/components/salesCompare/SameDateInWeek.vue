@@ -5,7 +5,7 @@
   </HelperComponents>
   <EmptyDataComponents v-show="showEmptyData"/>
   <InfoDataMaxComponents :data-json="isMaxs"/>
-  <InfoStepsComponents   type-step="dayinweek"/>
+  <InfoStepsComponents   type-step="dayinweek" :data-step='days'/>
 
   <template v-for="(item, index) in days">
     <el-row class="p-1">

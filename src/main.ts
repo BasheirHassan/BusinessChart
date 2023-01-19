@@ -10,6 +10,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import '@/assets/css/myStyle.css'
 import RegisterApp from "@/assets/tsModels/RegisterApp";
 import DayNameAr from "@/assets/tsModels/DayNameAr";
+const dayjs = require('dayjs');
 const moment = require('moment');
 
 import Numbro from 'numbro';
@@ -35,7 +36,9 @@ RegisterApp.checkisRegister().then(v=>{
     app.config.globalProperties.$GlobalBlurCss = 'blur'
 })
 
+
 app.config.globalProperties.$moment=  moment;
+app.config.globalProperties.$dayjs=  dayjs;
 app.config.globalProperties.$dayNameAr=  DayNameAr;
 app.config.globalProperties.$Numbro=  Numbro;
 app.config.globalProperties.$mysqlAsyncClass= new MysqlAsyncClass('serverhost');

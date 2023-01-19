@@ -9,7 +9,7 @@
 
   <EmptyDataComponents v-show="showEmptyData"/>
   <InfoDataMaxComponents v-show="!showEmptyData" :data-json="isMaxs"/>
-  <InfoStepsComponents v-show="!showEmptyData" type-step="months"/>
+  <InfoStepsComponents v-show="!showEmptyData" :data-step='month' type-step="months"/>
   <template v-for="(item, index) in month">
     <el-row class="p-1">
       <el-col :span="24">
@@ -63,7 +63,7 @@ export default {
   async mounted() {
 
    await this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales).then(rows=>{
-     console.log(rows,'this.month');
+     //console.log(rows,'this.month');
       this.month = rows;
       this.loadingData();
      this.showEmptyData = this.month.length <=0;

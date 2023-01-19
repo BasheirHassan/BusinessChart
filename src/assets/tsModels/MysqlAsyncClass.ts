@@ -174,7 +174,7 @@ export default class MysqlAsyncClass {
    */
   public async getAllWeeks(Typeconset: string) {
     const conn = await this.knexConnection();
-    return conn.select(knex.raw("WEEK(in_list_datetime) as weeks"))
+    return conn.select(knex.raw("WEEK(in_list_datetime) as weeks"),knex.raw("WEEK(in_list_datetime) as numberID"))
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
       .groupBy("weeks");
@@ -189,7 +189,7 @@ export default class MysqlAsyncClass {
    */
   public async getAllDays(Typeconset: string) {
     const conn = await this.knexConnection();
-    return conn.select(knex.raw("DAY(in_list_datetime) as day"))
+    return conn.select(knex.raw("DAY(in_list_datetime) as day"),{numberID:knex.raw("DAY(in_list_datetime)")},)
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
       .distinct()
@@ -204,7 +204,7 @@ export default class MysqlAsyncClass {
    */
   public async getAllDaysOffWeeks(Typeconset: string) {
     const conn = await this.knexConnection();
-    return conn.select(knex.raw("DAYOFWEEK(in_list_datetime) as days"), knex.raw("DAYNAME(in_list_datetime) as dayName"))
+    return conn.select(knex.raw("DAYOFWEEK(in_list_datetime) as days"), knex.raw("DAYNAME(in_list_datetime) as dayName"),{numberID:knex.raw("DAYNAME(in_list_datetime)")})
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
       .distinct()
@@ -221,7 +221,7 @@ export default class MysqlAsyncClass {
    */
   public async getAllMonths(Typeconset: string) {
     const conn = await this.knexConnection();
-    return conn.select({x:knex.raw("DATE_FORMAT(`in_list_datetime`,'%m-%Y')")},{month:knex.raw("MONTH(in_list_datetime)")},{year:knex.raw("YEAR(in_list_datetime)")})
+    return conn.select({x:knex.raw("DATE_FORMAT(`in_list_datetime`,'%m-%Y')")},{month:knex.raw("MONTH(in_list_datetime)")},{numberID:knex.raw("MONTH(in_list_datetime)")},{year:knex.raw("YEAR(in_list_datetime)")})
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
       .groupByRaw(["month","year"]);
