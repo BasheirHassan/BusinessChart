@@ -10,7 +10,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="اسم التسجيل ">
-            <el-input v-model.trim="form.companyName" placeholder="اسم التسجيل" ></el-input>
+            <el-input v-model="form.companyName" placeholder="اسم التسجيل" ></el-input>
           </el-form-item>
         </el-col>
       </el-row>

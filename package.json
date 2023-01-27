@@ -1,6 +1,6 @@
 {
   "name": "business-chart",
-  "version": "23.1.35",
+  "version": "23.1.36",
   "description": "Business Chart",
   "productName": "Business Chart",
   "main": "dist/electron/main/index.js",
@@ -40,7 +40,7 @@
   "devDependencies": {
     "@element-plus/icons-vue": "^2.0.10",
     "@vitejs/plugin-vue": "^4.0.0",
-    "electron": "^22.0.3",
+    "electron": "^22.1.0",
     "electron-builder": "^23.6.0",
     "electron-devtools-installer": "^3.2.0",
     "electron-packager": "^17.1.1",
@@ -81,7 +81,7 @@
     "electron-updater": "^5.3.0",
     "file-saver": "^2.0.5",
     "jquery": "^3.6.3",
-    "knex": "^2.4.1",
+    "knex": "^2.4.2",
     "local-devices": "^4.0.0",
     "lodash": "^4.17.21",
     "lodash.uniqueid": "^4.0.1",
