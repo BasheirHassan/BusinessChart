@@ -10,8 +10,8 @@
   <EmptyDataComponents v-show="showEmptyData"/>
   <InfoDataMaxComponents v-show="!showEmptyData" :data-json="isMaxs"/>
   <InfoStepsComponents v-show="!showEmptyData" :data-step='month' type-step="months"/>
+  <el-row class="p-1">
   <template v-for="(item, index) in month">
-    <el-row class="p-1">
       <el-col :span="24">
         <div style="height: 600px;">
           <CardChartComponents :is-visable-footer="true"
@@ -26,8 +26,9 @@
         </div>
 
       </el-col>
-    </el-row>
+
   </template>
+</el-row>
 </template>
 
 
@@ -63,7 +64,7 @@ export default {
   async mounted() {
 
    await this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales).then(rows=>{
-     //console.log(rows,'this.month');
+     console.log(rows,'this.month');
       this.month = rows;
       this.loadingData();
      this.showEmptyData = this.month.length <=0;
@@ -91,6 +92,7 @@ export default {
     promises.then(v => {
         //console.log(v, 'vvvvvvvv');
         //this.$mysqlAsyncClass.closeConnection();
+      if (!v.length) return;
         this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
       });
 

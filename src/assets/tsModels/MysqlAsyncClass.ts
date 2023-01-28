@@ -224,7 +224,7 @@ export default class MysqlAsyncClass {
     return conn.select({x:knex.raw("DATE_FORMAT(`in_list_datetime`,'%m-%Y')")},{month:knex.raw("MONTH(in_list_datetime)")},{numberID:knex.raw("MONTH(in_list_datetime)")},{year:knex.raw("YEAR(in_list_datetime)")})
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
-      .groupByRaw(["month","year"]);
+      .groupBy("month");
 
   }
 
@@ -621,14 +621,14 @@ export default class MysqlAsyncClass {
    */
   public async getSalesDayInMonthly(Typeconset: string, m: string) {
     const conn = await this.knexConnection();
-    return conn.select({ dateTime: "in_list_datetime" }, {days:knex.raw("DAY(in_list_datetime)")}, {x:knex.raw("DATE(in_list_datetime)")})
+    return conn.select({ dateTime: "in_list_datetime" },{fullDate:knex.raw("DATE_FORMAT(`in_list_datetime`,'%d-%Y')") }, {days:knex.raw("DAY(in_list_datetime)")}, {x:knex.raw("DATE(in_list_datetime)")})
       .sum("in_list_net as value")
       .count("in_list_id as tooltip")
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
       .andWhereRaw(`MONTH(in_list_datetime) = ${m} `)
       .orderBy("days")
-      .groupBy("days");
+      .groupBy("fullDate");
 
   }
 
