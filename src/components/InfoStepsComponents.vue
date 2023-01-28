@@ -63,7 +63,7 @@ export default {
             this.statUsElSteps[element.numberID] = {"status":"success"}
           });
 
-          console.log(this.statUsElSteps,'statUsElSteps');
+          // console.log(this.statUsElSteps,'statUsElSteps');
         }
       },
       deep: true
@@ -79,7 +79,7 @@ export default {
     const countDayMonth = 31;
     let typeStep = this.$props.typeStep.toLowerCase();
     //console.log(typeStep,'typeStep');
-    console.log(this.$moment().daysInMonth(),'typeStep');
+    // console.log(this.$moment().daysInMonth(),'typeStep');
     this.$nextTick(() => {
 
       switch (typeStep) {

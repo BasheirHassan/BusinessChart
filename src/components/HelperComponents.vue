@@ -88,7 +88,7 @@ export default {
     },
     findHelpUrl() {
       // this.$refs.yotBtn.onclick = window.open("yotubeUrls",'_blank');
-      console.log(this.$route, ' this.$route');
+      // console.log(this.$route, ' this.$route');
 
       let routeName = collect(this.$route);
       let meta = routeName.get('meta');
@@ -96,7 +96,7 @@ export default {
       if (helpUrl) {
         let val = collect(meta).get('helpUrl');
         if (collect(val).isNotEmpty() && val !== '') {
-          console.log(helpUrl, '  routeNamerouteName Find');
+          // console.log(helpUrl, '  routeNamerouteName Find');
           this.yotubeUrls =  collect(meta).get('helpUrl');
         }
 
