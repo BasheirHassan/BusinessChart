@@ -67,8 +67,9 @@ export default {
       rawObject.forEach((item, key) => {
         promises = new PromiseClass(resolve => {
          this.$mysqlAsyncClass.getSalesMonthly(item.in_type_const).then(rows => {
-            dataModel.push(new DataJsonChartModel(rows, item.label, 'YY-MM'));
+            dataModel.push(new DataJsonChartModel(rows, item.label, 'MM-YY'));
             resolve(true);
+           console.log(rows,'rows')
           });
         });
       });

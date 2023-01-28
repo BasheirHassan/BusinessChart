@@ -64,6 +64,7 @@ export default {
           this.$mysqlAsyncClass.getSalesDayly(item.in_type_const).then(rows => {
             dataModel.push(new DataJsonChartModel(rows, item.label));
             resolve(true);
+            console.log(rows,'rows')
           });
         });
       });

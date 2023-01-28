@@ -71,6 +71,7 @@ export default {
         promises = new PromiseClass(resolve => {
          this.$mysqlAsyncClass.getSalesWeekly(item.in_type_const).then(rows => {
             dataModel.push(new DataJsonChartModel(rows, item.label));
+           console.log(rows)
             resolve(true);
           });
         });

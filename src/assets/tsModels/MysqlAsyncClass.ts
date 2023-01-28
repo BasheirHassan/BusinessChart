@@ -281,6 +281,7 @@ export default class MysqlAsyncClass {
       .count("in_list_id as tooltip")
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
+      .orderBy("years")
       .groupBy("months","years");
 
   }
@@ -310,13 +311,13 @@ export default class MysqlAsyncClass {
    */
   public async getSalesWeekly(Typeconset: string) {
     const conn = await this.knexConnection();
-    return conn.select(knex.raw("WEEK(in_list_datetime) as weeks"), knex.raw("WEEK(in_list_datetime) as x"))
+    return conn.select({weeks:knex.raw("WEEK(in_list_datetime)")}, {xx:knex.raw("WEEK(in_list_datetime)")},{x:knex.raw("DATE_FORMAT(in_list_datetime, '%v-%y')")})
       .sum("in_list_net as value")
       .count("in_list_id as tooltip")
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
-      .orderBy("weeks", "ASC")
-      .groupBy("weeks");
+      .orderBy("x", "ASC")
+      .groupBy("x");
 
   }
 
@@ -397,13 +398,13 @@ export default class MysqlAsyncClass {
    */
   public async getSalesDayly(Typeconset: string) {
     const conn = await this.knexConnection();
-    return conn.select(knex.raw("DATE(in_list_datetime) as x"))
+    return conn.select({x:knex.raw("DATE(in_list_datetime)")})
       .sum("in_list_net as value")
       .count("in_list_id as tooltip")
       .from("tbl_invoice_list")
       .where("in_list_type_const", Typeconset)
       .orderBy('x')
-      .groupByRaw("DATE(in_list_datetime)");
+      .groupBy("x");
 
   }
 
