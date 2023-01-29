@@ -110,8 +110,8 @@ export default {
       promises.then(v => {
         //console.log(v, 'vvvvvvvv');
         //this.$mysqlAsyncClass.closeConnection();
-        if (!v.length) return;
-        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+          this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+
       });
 
 
