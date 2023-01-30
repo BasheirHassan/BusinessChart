@@ -59,7 +59,7 @@ export default {
         // hasn't been replaced.
         if (newValue){
           toRaw(newValue).forEach(element => {
-            console.log(element.numberID,'newValue.month');
+            // console.log(element.numberID,'newValue.month');
             this.statUsElSteps[element.numberID] = {"status":"success"}
           });
 
