@@ -60,35 +60,32 @@ export default {
 
   async mounted() {
 
-    this.weeks = await this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.purchases);
-    this.loadingData();
-    this.showEmptyData = this.weeks.length <= 0;
+    this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.sales).then(async rows => {
+      for (const item of rows) {
+        this.weeks.push(item);
+        await this.PromiseMe(item);
+      }
+      if (rows.length <= 0) {
+        this.showEmptyData = true;
+      }
+    }).catch(err => {
+      console.log(err);
+      this.showEmptyData = true
+    });
+
 
   },
   methods: {
-    loadingData() {
-      let promises;
-      const rawObject = toRaw(this.weeks);
-      rawObject.forEach(item => {
-        let keyID = item.weeks;
-        promises= new PromiseClass(resolve => {
-          this.$mysqlAsyncClass.getSalesWeeklyByID(StaticsEnum.purchases, keyID).then(rows => {
-            this.cardChartIsLoading[keyID] = false;
-            this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
-            resolve(true);
-
-          })
+    PromiseMe(r) {
+      let keyID = r.weeks;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesWeeklyByID(StaticsEnum.sales, keyID).then(rows => {
+          this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
+          res(this.chartDataJson[keyID]);
         })
-
-      promises.then(v => {
-        //console.log(v, 'vvvvvvvv');
-        //this.$mysqlAsyncClass.closeConnection();
-        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
       });
-    })
-
     }
-  }
+  },
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
 
-<div>{{statUsElSteps[0]}}</div>
+
 
   <div class="container-fluid" dir="ltr">
     <div class="row">
@@ -30,9 +30,6 @@ import { collect } from 'collect.js';
 import DayNameAr from '@/assets/tsModels/DayNameAr';
 
 
-
-
-let s =true;
 
 export default {
   name : 'InfoStepsComponents',
@@ -131,13 +128,11 @@ export default {
         return 'success'
       }
     },creatArrayByTotal(t){
-
       let item=[];
       for (let i = 0; i < t; i++) {
         item.push(i+1)
       }
       return collect(item);
-
     }
   }
 
