@@ -1,11 +1,11 @@
 <template>
   <BackToTopComponents/>
-  <HelperComponents title-helper="معلومة" v-show="!showEmptyData"  :progres-percinteg="percentage">
+  <HelperComponents title-helper="معلومة" v-show="!showEmptyData" :progres-percinteg="percentage">
     <p>مثال:جلب مشتريات السبت من كل ايام السنة كاملة - الاحد من كل ايام السنة</p>
   </HelperComponents>
   <EmptyDataComponents v-show="showEmptyData"/>
   <InfoDataMaxComponents :data-json="isMaxs"/>
-  <InfoStepsComponents   type-step="dayinweek" :data-step='days'/>
+  <InfoStepsComponents type-step="dayinweek" :data-step='days'/>
 
   <template v-for="(item, index) in days">
     <el-row class="p-1">
@@ -50,56 +50,56 @@ import $ from 'jquery';
 
 
 export default {
-  name      : 'SalesCompareSameDateInWeek',
+  name: 'SalesCompareSameDateInWeek',
   components: {
 
     InfoStepsComponents,
-    BackToTopComponents, CardChartComponents, HelperComponents, EmptyDataComponents, InfoDataMaxComponents},
+    BackToTopComponents, CardChartComponents, HelperComponents, EmptyDataComponents, InfoDataMaxComponents
+  },
   data() {
     return {
-      chartDataJson     : [],
+      chartDataJson: [],
       cardChartIsLoading: [],
-      days              : [],
-      dayName           : [],
-      showEmptyData     : false,
-      isMaxs            : [],
-      percentage:{}
+      days: [],
+      showEmptyData: false,
+      isMaxs: [],
+      percentage: {}
     };
   },
 
   async mounted() {
 
-    this.days = await this.$mysqlAsyncClass.getAllDaysOffWeeks(StaticsEnum.sales);
-    this.loadingData();
-    this.showEmptyData = this.days.length <= 0;
+    console.log('xxxxxxxxxxxxxx');
+
+    this.$mysqlAsyncClass.getAllDaysOffWeeks(StaticsEnum.sales).then(async rows => {
+      for (const item of rows) {
+        console.log(item,'item')
+        this.days.push(item);
+        await this.PromiseMe(item);
+
+      }
+      if (rows.length <= 0) {
+        this.showEmptyData = true;
+      }
+    }).catch(err => {
+      console.log(err);
+      this.showEmptyData = true
+    });
+
 
   },
   methods: {
-    loadingData() {
-      let promises;
-      const rawObject = toRaw(this.days);
-      rawObject.forEach(item => {
-        let keyID = item.days;
-        promises = new PromiseClass(resolve => {
-          $.when(this.percentage = {value:keyID,total:rawObject.length-1}).then(()=>{
-            this.$mysqlAsyncClass.getSalesDayOffWeeks(StaticsEnum.sales, keyID).then(rows => {
-              this.cardChartIsLoading[keyID] = false;
-              this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
-              resolve(true);
-            });
-          });
-        });
-
+    PromiseMe(r) {
+      let keyID = r.days;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesDayOffWeeks(StaticsEnum.sales, keyID).then(rows => {
+          this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
+          res(this.chartDataJson[keyID]);
+        })
       });
+    }
 
 
-      promises.then(v => {
-        //console.log(v, 'vvvvvvvv');
-        //this.$mysqlAsyncClass.closeConnection();
-        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
-      });
-
-    },
   },
 };
 </script>

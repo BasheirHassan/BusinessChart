@@ -1,23 +1,23 @@
 <template>
-<BackToTopComponents/>
+  <BackToTopComponents/>
   <HelperComponents title-helper="معلومة" v-show="!showEmptyData" :progres-percinteg="percentage">
     <p>مثال يوم جلب يوم 1 من كل ايام السنة وعرضه في يوم واحد</p>
     <p>جلب يوم 2 من كل السنة وعرض في يوم 2</p>
   </HelperComponents>
 
-<EmptyDataComponents v-show="showEmptyData"/>
-<InfoDataMaxComponents v-show="!showEmptyData"  :data-json="isMaxs"/>
-<InfoStepsComponents v-show="!showEmptyData"  :data-step='days' type-step="dayInMonth"/>
+  <EmptyDataComponents v-show="showEmptyData"/>
+  <InfoDataMaxComponents v-show="!showEmptyData" :data-json="isMaxs"/>
+  <InfoStepsComponents v-show="!showEmptyData" :data-step='days' type-step="dayInMonth"/>
 
   <template v-for="(item, index) in days">
     <el-row class="p-1">
       <el-col :span="24">
         <div style="height: 600px;">
 
-          <CardChartComponents :is-visable-footer="false"
+          <CardChartComponents :is-visable-footer="true"
                                :is-visable-loading="cardChartIsLoading[item.day]"
                                :is-visable-sorted-data="!cardChartIsLoading[item.day]"
-                               :is-visable-icons ="!cardChartIsLoading[item.day]"
+                               :is-visable-icons="!cardChartIsLoading[item.day]"
                                :show-legend="false"
                                type-chart-bar="column"
                                :data-hash="item.day"
@@ -50,57 +50,60 @@ import $ from 'jquery';
 
 
 export default {
-  name      : 'SalesCompareSameDayInMonths',
-  components: { InfoDataMaxComponents,BackToTopComponents, EmptyDataComponents, CardChartComponents,HelperComponents,InfoStepsComponents},
+  name: 'SalesCompareSameDayInMonths',
+  components: {
+    InfoDataMaxComponents,
+    BackToTopComponents,
+    EmptyDataComponents,
+    CardChartComponents,
+    HelperComponents,
+    InfoStepsComponents
+  },
 
   data() {
     return {
-      chartDataJson     : [],
+      chartDataJson: [],
       cardChartIsLoading: [],
-      days            : [],
-      showEmptyData:false,
-      isMaxs:[],
-      percentage:{}
+      days: [],
+      showEmptyData: false,
+      isMaxs: [],
+      percentage: {}
     };
   },
 
   async mounted() {
+    this.$mysqlAsyncClass.getAllDays(StaticsEnum.sales).then(async rows => {
+      for (const item of rows) {
+        this.days.push(item);
+        await this.PromiseMe(item);
+      }
+      if (rows.length <= 0) {
+        this.showEmptyData = true;
+      }
+    }).catch(err => {
+      console.log(err);
+      this.showEmptyData = true
+    });
 
-    this.days = await this.$mysqlAsyncClass.getAllDays(StaticsEnum.sales);
-    this.loadingData();
-    this.showEmptyData = this.days.length <=0;
-
+    // Promise.all(promises).then((results) => {
+    //   //this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+    //   console.log('Finshs ALL')
+    // });
 
   },
   methods: {
-    loadingData() {
-      let promises;
-      const rawObject = toRaw(this.days);
-
-
-      rawObject.forEach((item, key) => {
-        let keyID = item.day;
-        promises = new PromiseClass(resolve => {
-          this.cardChartIsLoading[keyID] = true;
-          $.when(this.percentage = {value:keyID,total:rawObject.length-1}).then(()=>{
-            this.$mysqlAsyncClass.getSalesDayInMonths(StaticsEnum.sales, keyID).then(rows => {
-                this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
-                resolve(this.chartDataJson[keyID]);
-              })
-
-            })
-
-        });
+    PromiseMe(r) {
+      let keyID = r.day;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesDayInMonths(StaticsEnum.sales, keyID).then(rows => {
+          this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
+          res(this.chartDataJson[keyID]);
+        })
       });
+    }
 
-     promises.then(v => {
-       //console.log(v, 'vvvvvvvv');
-        this.$mysqlAsyncClass.closeConnection();
-        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
-      });
+  }
 
-    },
-  },
 };
 </script>
 

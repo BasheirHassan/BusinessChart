@@ -53,10 +53,7 @@ import InfoStepsComponents from '@/components/InfoStepsComponents.vue';
 
 import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
-import {ElNotification} from 'element-plus';
 import {toRaw} from 'vue';
-import PromiseClass from '@/assets/tsModels/PromiseClass';
-import DataModel from '@/assets/tsModels/DataModel';
 
 export default {
   name: 'SalesDaylyAllMonthly',
@@ -80,66 +77,33 @@ export default {
   },
 
   async mounted() {
-
-
     const PromiseMe = (r) => {
       return new Promise((res, rej) => {
-          this.$mysqlAsyncClass.getSalesDayInMonthly(StaticsEnum.sales, r.month).then(rows => {
-            let keyID =  r.month;
-            console.log(r, 'RRRRR')
-            this.cardChartIsLoading[keyID] = false;
-            this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
-            res(rows);
-          })
+        this.$mysqlAsyncClass.getSalesDayInMonthly(StaticsEnum.sales, r.month).then(rows => {
+          let keyID = r.month;
+          this.cardChartIsLoading[keyID] = false;
+          this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
+          res(rows);
+        })
       });
     }
 
-    const main = async (r) => {
-      for (const item of r) {
-        console.log(item.month, 'val');
-        this.month.push(item);
-        let val = await PromiseMe(item);
-      }
-    }
 
-    this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales).then(rows => {
-      console.log(rows, 'this.month');
-      if (rows.length<=0){
-        this.showEmptyData =true;
+    this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales).then(async rows => {
+      for (const item of rows) {
+        this.month.push(item);
+        await PromiseMe(item);
       }
-      main(rows)
+      if (rows.length <= 0) {
+        this.showEmptyData = true;
+      }
     }).catch(err => {
       console.log(err);
       this.showEmptyData = true
     });
 
-  },
-  methods: {
-    loadingData() {
-      // let promises;
-      // const rawObject = toRaw(this.month);
-      // rawObject.forEach(item => {
-      //   let keyID = item.month;
-      //
-      //   promises = new PromiseClass(resolve => {
-      //     this.$mysqlAsyncClass.getSalesDayInMonthly(StaticsEnum.sales, keyID).then(rows => {
-      //       this.cardChartIsLoading[keyID] = false;
-      //       this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
-      //       resolve(true);
-      //
-      //     })
-      //   })
-      // });
-      // promises.then(v => {
-      //   //console.log(v, 'vvvvvvvv');
-      //   //this.$mysqlAsyncClass.closeConnection();
-      //   if (!v.length) return;
-      //   this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
-      // });
+  }
 
-
-    },
-  },
 };
 </script>
 
