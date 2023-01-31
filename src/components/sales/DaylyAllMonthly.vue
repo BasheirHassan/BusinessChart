@@ -50,6 +50,7 @@ import EmptyDataComponents from '@/components/EmptyDataComponents.vue';
 import BackToTopComponents from '@/components/BackToTopComponents.vue';
 import InfoDataMaxComponents from '@/components/InfoDataMaxComponents.vue';
 import InfoStepsComponents from '@/components/InfoStepsComponents.vue';
+import {Promise} from "bluebird";
 
 import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
@@ -77,7 +78,23 @@ export default {
   },
 
   async mounted() {
-    const PromiseMe = (r) => {
+
+    this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales).then(async rows => {
+      for (const item of rows) {
+        this.month.push(item);
+        await this.PromiseMe(item);
+      }
+      if (rows.length <= 0) {
+        this.showEmptyData = true;
+      }
+    }).catch(err => {
+      console.log(err);
+      this.showEmptyData = true
+    });
+  },
+  methods: {
+    PromiseMe(r) {
+      let keyID = r.day;
       return new Promise((res, rej) => {
         this.$mysqlAsyncClass.getSalesDayInMonthly(StaticsEnum.sales, r.month).then(rows => {
           let keyID = r.month;
@@ -87,20 +104,6 @@ export default {
         })
       });
     }
-
-
-    this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales).then(async rows => {
-      for (const item of rows) {
-        this.month.push(item);
-        await PromiseMe(item);
-      }
-      if (rows.length <= 0) {
-        this.showEmptyData = true;
-      }
-    }).catch(err => {
-      console.log(err);
-      this.showEmptyData = true
-    });
 
   }
 

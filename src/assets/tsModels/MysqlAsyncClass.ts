@@ -901,6 +901,10 @@ export default class MysqlAsyncClass {
   }
 
 
+
+
+
+
   public async getNotInPosClose(in_list_type_const: string) {
     const conn = await this.knexConnection();
     return conn.select("in_list_id", "in_list_doc_id", "in_list_type_id", "in_list_acc_cust", "in_list_type_const")

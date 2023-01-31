@@ -1,28 +1,28 @@
 <template>
-  <BackToTopComponents />
+  <BackToTopComponents/>
 
   <HelperComponents v-show="!showEmptyData" title-helper="معلومة">مثال:جلب حركة المنتج وترتيبها الاكثر حركة
   </HelperComponents>
 
-  <EmptyDataComponents v-show="showEmptyData" />
+  <EmptyDataComponents v-show="showEmptyData"/>
 
   <div class="mb-3" style="direction: ltr" v-show="!showEmptyData">
     <el-pagination
-      :page-size="pageSize"
-      :total="totalItems"
-      :background="true"
-      layout="prev, pager, next, jumper"
-      @current-change="setNextChunks"
+        :page-size="pageSize"
+        :total="totalItems"
+        :background="true"
+        layout="prev, pager, next, jumper"
+        @current-change="setNextChunks"
 
     />
   </div>
 
-  <div v-loading.fullscreen.lock="isLoading" >
+  <div v-loading.fullscreen.lock="isLoading">
     <el-row :gutter="20" element-loading-text="تحميل ...">
       <template v-for="(item,key) in dataJson">
         <el-col :span="6">
           <CollapseSyncComponents :card-title="item[0].it_name" tooltip-tilte="عدد منتجات" :key="key"
-                                  :data-json="item" />
+                                  :data-json="item"/>
         </el-col>
       </template>
     </el-row>
@@ -36,46 +36,62 @@ import CollapseSyncComponents from "@/components/CollapseSyncComponents.vue";
 import BackToTopComponents from "@/components/BackToTopComponents.vue";
 import HelperComponents from "@/components/HelperComponents.vue";
 import EmptyDataComponents from "@/components/EmptyDataComponents.vue";
-import { collect } from "collect.js";
-import { toRaw } from "vue";
+import {collect} from "collect.js";
+import {toRaw} from "vue";
+import {StaticsEnum} from "@/assets/tsModels/StaticsAll";
+import DataJsonChartModel from "@/assets/tsModels/DataJsonChartModel";
 
 export default {
-  name      : "SalesItemsMax",
-  components: { CollapseSyncComponents, BackToTopComponents, HelperComponents, EmptyDataComponents },
+  name: "SalesItemsMax",
+  components: {CollapseSyncComponents, BackToTopComponents, HelperComponents, EmptyDataComponents},
 
   data() {
     return {
-      dataJson     : [],
-      isLoading    : true,
+      dataJson: [],
+      isLoading: true,
       showEmptyData: false,
-      chunksItems  : [],
-      pageSize     : 56,
-      totalItems   : 0
+      chunksItems: [],
+      pageSize: 56,
+      totalItems: 0
 
     };
   },
   async mounted() {
-    let items = await this.$mysqlAsyncClass.getItemsInDet();
-    let itemsIDs = collect(items).pluck("it_id").toArray();
-    this.chunksItems = collect(itemsIDs).chunk(56).toArray();
-    this.totalItems = items.length;
+    // let items = await this.$mysqlAsyncClass.getItemsInDet();
+    // let itemsIDs = collect(items).pluck("it_id").toArray();
+    // this.chunksItems = collect(itemsIDs).chunk(56).toArray();
+    // this.totalItems = items.length;
+    //
+    // await this.setNextChunks(1);
 
-    await this.setNextChunks(1);
+
+    this.$mysqlAsyncClass.getItemsInDet(StaticsEnum.sales).then(async rows => {
+
+      for (let i = 0; i < rows.length; i++) {
+        await this.PromiseMe(rows[i], i);
+      }
+
+      if (rows.length <= 0) {
+        this.showEmptyData = true;
+      }
+    }).catch(err => {
+      console.log(err);
+      this.showEmptyData = true
+    });
   },
 
   methods: {
-    initList(rows) {
-      let allItems = [];
-      let badgeColor = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info"];
-      collect(rows).map(item => {
-        let cssRandom = badgeColor[Math.floor(Math.random() * badgeColor.length)];
-        allItems.push(
-          { "x": item.x, "value": item.value, "tooltip": item.tooltip, it_name: item.it_name, css: cssRandom });
+    PromiseMe(r, id) {
+      console.log(r, 'rrrrrrrrrr')
+      let keyID = r.it_id;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesItemAllByID([keyID]).then(rows => {
+          console.log(rows)
+          this.chartDataJson = [new DataJsonChartModel(toRaw(rows), id)];
+          res(this.chartDataJson);
+        })
       });
-
-      return allItems;
     },
-
     initRow(chunks) {
 
       //console.log(toRaw(chunks), "chunksItems");
@@ -96,19 +112,6 @@ export default {
         this.isLoading = false;
       });
     },
-    async setNextChunks(pageID) {
-
-      pageID = pageID - 1;
-      //console.log(pageID, "pageID");
-      //console.log(this.chunksItems.length, "this.chunksItems.length");
-
-      if (pageID >= this.chunksItems.length) {
-        return;
-      }
-
-      this.initRow(this.chunksItems[pageID]);
-
-    }
 
   }
 };
