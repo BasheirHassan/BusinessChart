@@ -1,12 +1,12 @@
 <template>
-<BackToTopComponents/>
+  <BackToTopComponents/>
   <HelperComponents title-helper="معلومة" v-show="!showEmptyData">
     <p>جلب مشتريات من يوم السبت الى يوم الجمعه ومن ثم عرضها حسب رقم الاسبوع</p>
     <p>جلب مشتريات الاسبوع الثاني وعرضها في الاسبوع الثاني</p>
   </HelperComponents>
   <EmptyDataComponents v-show="showEmptyData"/>
   <InfoDataMaxComponents v-show="!showEmptyData" :data-json="isMaxs"/>
-  <InfoStepsComponents   v-show="!showEmptyData" type-step="weeks"/>
+  <InfoStepsComponents v-show="!showEmptyData" type-step="weeks"/>
 
   <template v-for="(item, index) in weeks">
     <el-row class="p-1">
@@ -17,7 +17,7 @@
                                :is-visable-sorted-data="!cardChartIsLoading[item.weeks]"
                                :show-legend="false"
                                :data-hash="item.weeks"
-                               :is-visable-icons ="!cardChartIsLoading[item.weeks]"
+                               :is-visable-icons="!cardChartIsLoading[item.weeks]"
                                :chart-data-json="chartDataJson[item.weeks]"
                                :chart-id="'chartID-'+item.weeks"
                                :card-title=" '  اسبوع - ' + item.weeks"/>
@@ -46,15 +46,22 @@ import PromiseClass from '@/assets/tsModels/PromiseClass';
 
 
 export default {
-  name      : 'PurchaseCompareWeekly',
-  components: {BackToTopComponents, CardChartComponents, EmptyDataComponents, HelperComponents, InfoDataMaxComponents,InfoStepsComponents},
+  name: 'PurchaseCompareWeekly',
+  components: {
+    BackToTopComponents,
+    CardChartComponents,
+    EmptyDataComponents,
+    HelperComponents,
+    InfoDataMaxComponents,
+    InfoStepsComponents
+  },
   data() {
     return {
-      chartDataJson     : [],
+      chartDataJson: [],
       cardChartIsLoading: [],
-      weeks             : [],
-      showEmptyData     : false,
-      isMaxs            : []
+      weeks: [],
+      showEmptyData: false,
+      isMaxs: []
     };
   },
 

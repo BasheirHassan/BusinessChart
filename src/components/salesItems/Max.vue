@@ -6,16 +6,19 @@
 
   <EmptyDataComponents v-show="showEmptyData"/>
 
-  <div class="mb-3" style="direction: ltr" v-show="!showEmptyData">
-    <el-pagination
-        :page-size="pageSize"
-        :total="totalItems"
-        :background="true"
-        layout="prev, pager, next, jumper"
-        @current-change="setNextChunks"
 
-    />
-  </div>
+
+
+  <el-row :gutter="12">
+    <el-col :span="24"><CardBlockComponents card-title='اجمالي منتجات' :data-body='totalItems' background-color='#03A9F4'>
+      <template v-slot:any >
+        <progress-percentage :percentage="percentage" :total-items="totalItems"/>
+      </template>
+    </CardBlockComponents></el-col>
+  </el-row>
+
+
+
 
   <div v-loading.fullscreen.lock="isLoading">
     <el-row :gutter="20" element-loading-text="تحميل ...">
@@ -40,10 +43,14 @@ import {collect} from "collect.js";
 import {toRaw} from "vue";
 import {StaticsEnum} from "@/assets/tsModels/StaticsAll";
 import DataJsonChartModel from "@/assets/tsModels/DataJsonChartModel";
+import ProgressPercentage from "@/components/progressPercentageComponents.vue";
+import CardBlockComponents from "@/components/CardBlockComponents.vue";
 
 export default {
   name: "SalesItemsMax",
-  components: {CollapseSyncComponents, BackToTopComponents, HelperComponents, EmptyDataComponents},
+  components: {
+    CardBlockComponents,
+    ProgressPercentage, CollapseSyncComponents, BackToTopComponents, HelperComponents, EmptyDataComponents},
 
   data() {
     return {
@@ -52,7 +59,9 @@ export default {
       showEmptyData: false,
       chunksItems: [],
       pageSize: 56,
-      totalItems: 0
+      totalItems: 0,
+      percentage: 0,
+      i:0
 
     };
   },
@@ -63,10 +72,9 @@ export default {
     // this.totalItems = items.length;
     //
     // await this.setNextChunks(1);
-
-
+    this.isLoading =false;
     this.$mysqlAsyncClass.getItemsInDet(StaticsEnum.sales).then(async rows => {
-
+      this.totalItems=rows.length;
       for (let i = 0; i < rows.length; i++) {
         await this.PromiseMe(rows[i], i);
       }
@@ -82,38 +90,34 @@ export default {
 
   methods: {
     PromiseMe(r, id) {
-      console.log(r, 'rrrrrrrrrr')
       let keyID = r.it_id;
       return new Promise((res, rej) => {
         this.$mysqlAsyncClass.getSalesItemAllByID([keyID]).then(rows => {
-          console.log(rows)
+          //console.log(rows)
           this.chartDataJson = [new DataJsonChartModel(toRaw(rows), id)];
+          this.dataJson.push(this.initList(rows));
+          this.i+=1;
+          this.percentage=this.i;
           res(this.chartDataJson);
         })
       });
     },
-    initRow(chunks) {
 
-      //console.log(toRaw(chunks), "chunksItems");
-      this.isLoading = true;
-      this.dataJson = [];
-      let chunksRow = toRaw(chunks);
-      this.$mysqlAsyncClass.getSalesItemAllByID(chunksRow).then(v => {
 
-        let grouped = collect(v).sortBy('in_det_in_out_type').groupBy("it_id");
-        grouped.each(async (item, key) => {
-          this.dataJson.push(this.initList(item));
-        });
-
-        this.showEmptyData = v.length <= 0;
-      }).catch(e => {
-        console.log(e, "error");
-      }).finally(() => {
-        this.isLoading = false;
+    initList(rows) {
+      let allItems = [];
+      let badgeColor = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info"];
+      collect(rows).map(item => {
+        let cssRandom = badgeColor[Math.floor(Math.random() * badgeColor.length)];
+        allItems.push(
+            {"x": item.x, "value": item.value, "tooltip": item.tooltip, it_name: item.it_name, css: cssRandom});
       });
+
+      return allItems;
     },
 
-  }
+
+}
 };
 </script>
 
