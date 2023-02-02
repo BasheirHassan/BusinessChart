@@ -29,6 +29,7 @@ import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
 import {toRaw} from 'vue';
+import {collect} from "collect.js";
 
 
 
@@ -45,45 +46,48 @@ export default {
 
     };
   },
-
-
   methods: {
-    selectItems(data) {
-
+    async selectItems(data) {
       let self = this;
-      let dataModel = [];
-      let promises = [];
+      let i = 0;
+      let promiseAll = [];
 
-      // console.log(data, 'data');
-      if (!toRaw(data).length) {
+
+      if (collect(data).isEmpty()) {
         self.chartDataJson = [];
         return;
       }
 
+
       this.cardChartIsLoading = true;
-      this.isVisibleIcons = true;
+      this.isVisibleIcons = false;
       const rawObject = toRaw(data);
-      rawObject.forEach((item, key) => {
-        promises = new PromiseClass(resolve => {
-          this.$mysqlAsyncClass.getSalesCustomersWeekly(StaticsEnum.sales, item.id).then(rows=> {
-            dataModel.push(new DataJsonChartModel(rows, item.label));
-            resolve(true);
-          });
+      for (const item of rawObject) {
+        promiseAll[i++] = await this.PromiseMe(item);
+      }
+
+
+
+      Promise.all(promiseAll).then((values) => {
+        self.chartDataJson = values;
+        self.cardChartIsLoading = false;
+        this.isVisibleIcons = true;
+      });
+
+
+    }  ,
+    PromiseMe(item) {
+      return new Promise((resolve, reject) => {
+        this.$mysqlAsyncClass.getSalesCustomersWeekly(StaticsEnum.sales, item.id).then(rows=> {
+          resolve(new DataJsonChartModel(rows, item.label));
         });
       });
-
-      promises.then(v => {
-        //console.log(v, 'vvvvvvvvvvvv');
-        self.chartDataJson = dataModel;
-        self.cardChartIsLoading = false;
-      });
-
-
-
-
     }
 
   }
+
+
+
 };
 </script>
 

@@ -203,26 +203,26 @@ const router = createRouter({
          * مبيعات العملاء
          */
         {
-            meta: {title: 'مبيعات - منتجات -   شهرية'},
+            meta: {title: 'مبيعات عملاء -   شهرية'},
             name:'salescCustomersMonthly',
             path: ('/salescCustomers/monthly'),
             component: () => import('@/components/salesCustomers/Monthly.vue')
         },
         {
-            meta: {title: 'مبيعات - منتجات -   اسبوعية'},
+            meta: {title: 'مبيعات عملاء -   اسبوعية'},
             name:'salescCustomersWeekly',
             path: ('/salescCustomers/weekly'),
             component: () => import('@/components/salesCustomers/Weekly.vue')
         },
         {
-            meta: {title: 'مبيعات - منتجات -  يومية'},
+            meta: {title: 'مبيعات عملاء -  يومية'},
             name:'salescCustomersDayly',
             path: ('/salescCustomers/dayly'),
             component: () => import('@/components/salesCustomers/Dayly.vue')
         },
 
         {
-            meta: {title: 'مبيعات - منتجات -  بالساعة'},
+            meta: {title: 'مبيعات  عملاء -  بالساعة'},
             name:'salescCustomersHourly',
             path: ('/salescCustomers/hourly'),
             component: () => import('@/components/salesCustomers/Hourly.vue')

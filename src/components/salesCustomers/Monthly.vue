@@ -28,6 +28,7 @@ import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
 import {toRaw} from 'vue';
+import {collect} from "collect.js";
 
 
 
@@ -45,46 +46,41 @@ export default {
   },
 
   methods: {
-    selectItems(data) {
-
+    async selectItems(data) {
       let self = this;
-      let dataModel = [];
-      let promises = [];
+      let i = 0;
+      let promiseAll = [];
 
 
-      if (data != null && !toRaw(data).length) {
+      if (collect(data).isEmpty()) {
         self.chartDataJson = [];
         return;
       }
-      console.log(data, 'data');
+
+
       this.cardChartIsLoading = true;
-      this.isVisibleIcons = true;
+      this.isVisibleIcons = false;
       const rawObject = toRaw(data);
-      if (!rawObject) {
-        self.cardChartIsLoading = false;
-        return;
+      for (const item of rawObject) {
+        promiseAll[i++] = await this.PromiseMe(item);
       }
 
 
-      rawObject.forEach((item, key) => {
-        promises = new PromiseClass(resolve => {
-          this.$mysqlAsyncClass.getSalesCustomersMonthly(StaticsEnum.sales, item.id).then(rows=> {
-            dataModel.push(new DataJsonChartModel(rows, item.label, 'yyyy-MM'));
-            resolve(true);
-          });
+
+      Promise.all(promiseAll).then((values) => {
+        self.chartDataJson = values;
+        self.cardChartIsLoading = false;
+        this.isVisibleIcons = true;
+      });
+
+
+    }  ,
+    PromiseMe(item) {
+      return new Promise((resolve, reject) => {
+        this.$mysqlAsyncClass.getSalesCustomersMonthly(StaticsEnum.sales, item.id).then(rows=> {
+          resolve(new DataJsonChartModel(rows, item.label, 'yyyy-MM'));
         });
       });
-
-      promises.then(v => {
-        // console.log(v, 'vvvvv');
-        self.chartDataJson = dataModel;
-        self.cardChartIsLoading = false;
-      });
-
-
-
-
-
     }
 
   }

@@ -49,7 +49,7 @@ export default {
       let self = this;
       let i = 0;
       let promiseAll = [];
-      this.cardChartIsLoading = true;
+
 
 
       if (!toRaw(data).length) {
@@ -57,7 +57,7 @@ export default {
         return;
       }
 
-
+      this.cardChartIsLoading = true;
 
       const rawObject = toRaw(data);
       for (const item of rawObject) {
