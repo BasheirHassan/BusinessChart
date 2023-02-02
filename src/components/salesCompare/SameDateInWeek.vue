@@ -44,9 +44,7 @@ import InfoStepsComponents from '@/components/InfoStepsComponents.vue';
 import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
 import DataModel from '@/assets/tsModels/DataModel';
-import PromiseClass from '@/assets/tsModels/PromiseClass';
 import {toRaw} from 'vue';
-import $ from 'jquery';
 
 
 export default {
@@ -69,18 +67,22 @@ export default {
 
   async mounted() {
 
-    console.log('xxxxxxxxxxxxxx');
-
+    let i = 0;
+    let promiseAll = [];
     this.$mysqlAsyncClass.getAllDaysOffWeeks(StaticsEnum.sales).then(async rows => {
       for (const item of rows) {
-        console.log(item,'item')
         this.days.push(item);
-        await this.PromiseMe(item);
-
+        promiseAll[i++] = await this.PromiseMe(item);
       }
       if (rows.length <= 0) {
         this.showEmptyData = true;
       }
+
+
+      Promise.all(promiseAll).then(data => {
+        console.log('Donnn')
+            this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+          });
     }).catch(err => {
       console.log(err);
       this.showEmptyData = true

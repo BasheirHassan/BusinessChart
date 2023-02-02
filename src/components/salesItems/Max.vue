@@ -61,58 +61,60 @@ export default {
       pageSize: 56,
       totalItems: 0,
       percentage: 0,
-      i:0
+      i:0,
+      prmoAll:[]
 
     };
   },
   async mounted() {
-    // let items = await this.$mysqlAsyncClass.getItemsInDet();
-    // let itemsIDs = collect(items).pluck("it_id").toArray();
-    // this.chunksItems = collect(itemsIDs).chunk(56).toArray();
-    // this.totalItems = items.length;
-    //
-    // await this.setNextChunks(1);
     this.isLoading =false;
     this.$mysqlAsyncClass.getItemsInDet(StaticsEnum.sales).then(async rows => {
       this.totalItems=rows.length;
       for (let i = 0; i < rows.length; i++) {
-        await this.PromiseMe(rows[i], i);
+        this.prmoAll[i] = await this.PromiseMe(rows[i], i);
       }
 
       if (rows.length <= 0) {
         this.showEmptyData = true;
       }
+
+      Promise.all(this.prmoAll).then((values) => {
+        console.log('Finshhhhhh',values);
+      });
+
     }).catch(err => {
       console.log(err);
       this.showEmptyData = true
     });
+
+
+
+
   },
 
   methods: {
     PromiseMe(r, id) {
       let keyID = r.it_id;
-      return new Promise((res, rej) => {
-        this.$mysqlAsyncClass.getSalesItemAllByID([keyID]).then(rows => {
-          //console.log(rows)
-          this.chartDataJson = [new DataJsonChartModel(toRaw(rows), id)];
-          this.dataJson.push(this.initList(rows));
-          this.i+=1;
-          this.percentage=this.i;
-          res(this.chartDataJson);
-        })
+     return  new Promise((res, rej) => {
+          this.$mysqlAsyncClass.getSalesItemAllByID([keyID]).then(async rows => {
+            this.chartDataJson = [new DataJsonChartModel(toRaw(rows), id)];
+            let resultList = await this.initList(rows);
+            this.dataJson.push(resultList);
+            this.i += 1;
+            this.percentage = this.i;
+            res(this.chartDataJson);
+          });
       });
+
     },
 
 
-    initList(rows) {
+   async initList(rows) {
       let allItems = [];
       let badgeColor = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info"];
-      collect(rows).map(item => {
+     await collect(rows).map(item => {
         let cssRandom = badgeColor[Math.floor(Math.random() * badgeColor.length)];
-        allItems.push(
-            {"x": item.x, "value": item.value, "tooltip": item.tooltip, it_name: item.it_name, css: cssRandom});
-      });
-
+        allItems.push( {"x": item.x, "value": item.value, "tooltip": item.tooltip, it_name: item.it_name, css: cssRandom});});
       return allItems;
     },
 

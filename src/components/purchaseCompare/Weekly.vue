@@ -43,6 +43,7 @@ import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
 import DataModel from '@/assets/tsModels/DataModel';
 import {toRaw} from 'vue';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
+import {collect} from "collect.js";
 
 
 export default {
@@ -66,18 +67,23 @@ export default {
   },
 
   async mounted() {
+    let i = 0;
+    let promiseAll = [];
 
-    this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.sales).then(async rows => {
+    this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.purchases).then(async rows => {
       for (const item of rows) {
         this.weeks.push(item);
-        await this.PromiseMe(item);
+        promiseAll[i++] =  await this.PromiseMe(item);
       }
-      if (rows.length <= 0) {
-        this.showEmptyData = true;
-      }
+
+      Promise.all(promiseAll).then((values) => {
+        console.log('Finshhhhhh', values);
+        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+      });
     }).catch(err => {
       console.log(err);
-      this.showEmptyData = true
+    }).finally(()=>{
+      this.showEmptyData = collect(this.weeks).isEmpty()
     });
 
 

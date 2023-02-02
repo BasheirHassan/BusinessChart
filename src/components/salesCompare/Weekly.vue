@@ -47,6 +47,8 @@ import InfoStepsComponents from '@/components/InfoStepsComponents.vue';
 import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
 import {toRaw} from 'vue';
+import DataModel from "@/assets/tsModels/DataModel";
+import {collect} from "collect.js";
 
 export default {
   name      : 'SalesCompareWeekly',
@@ -66,18 +68,21 @@ export default {
   },
 
   async mounted() {
-
+    let i = 0;
+    let promiseAll = [];
     this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.sales).then(async rows => {
       for (const item of rows) {
         this.weeks.push(item);
-        await this.PromiseMe(item);
+        promiseAll[i++] =await this.PromiseMe(item);
       }
-      if (rows.length <= 0) {
-        this.showEmptyData = true;
-      }
+
+      Promise.all(promiseAll).then((values) => {
+        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+      });
     }).catch(err => {
       console.log(err);
-      this.showEmptyData = true
+    }).finally((k)=>{
+      this.showEmptyData = collect(this.weeks).isEmpty()
     });
 
 
