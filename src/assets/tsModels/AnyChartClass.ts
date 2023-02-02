@@ -395,7 +395,7 @@ export default class AnyChartClass {
     initHeatMapData(data:any){
         // @ts-ignore
         let coll = collect(data);
-        console.log(coll,'coll');
+        // console.log(coll,'coll');
         // @ts-ignore
         let dataMap = [];
         let xxx = 0;

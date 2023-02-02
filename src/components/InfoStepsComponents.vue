@@ -1,13 +1,14 @@
 <template>
 
-<div>{{statUsElSteps[0]}}</div>
+
 
   <div class="container-fluid" dir="ltr">
     <div class="row">
       <div class="col">
         <el-steps :active="active" align-center finish-status="success">
+
           <template v-for="(item, index) in itemSteps">
-            <el-step    :title="item.title || item.ID "  :status='statUsElSteps[item.ID]?.status'/>
+            <el-step    :title="item.title || item.ID "  :status='statUsElSteps[item.ID]?.status' :is-loading="true" :icon="statUsElSteps[item.ID]?.icon || 'Loading' "/>
           </template>
         </el-steps>
 
@@ -28,11 +29,9 @@
 import { reactive, ref, toRaw } from 'vue';
 import { collect } from 'collect.js';
 import DayNameAr from '@/assets/tsModels/DayNameAr';
+import {Loading, Upload} from "@element-plus/icons-vue";
 
 
-
-
-let s =true;
 
 export default {
   name : 'InfoStepsComponents',
@@ -59,8 +58,8 @@ export default {
         // hasn't been replaced.
         if (newValue){
           toRaw(newValue).forEach(element => {
-            console.log(element.numberID,'newValue.month');
-            this.statUsElSteps[element.numberID] = {"status":"success"}
+            // console.log(element.numberID,'newValue.month');
+            this.statUsElSteps[element.numberID] = {"status":"success","icon":"SuccessFilled"}
           });
 
           // console.log(this.statUsElSteps,'statUsElSteps');
@@ -122,6 +121,12 @@ export default {
 
  },
   methods:{
+    Loading() {
+      return Loading
+    },
+    Upload() {
+      return Upload
+    },
     isSetInData(k){
       let keys = toRaw(this.$props.dataStep);
       let getX = collect(keys).where('month',k.toString());
@@ -131,13 +136,11 @@ export default {
         return 'success'
       }
     },creatArrayByTotal(t){
-
       let item=[];
       for (let i = 0; i < t; i++) {
         item.push(i+1)
       }
       return collect(item);
-
     }
   }
 

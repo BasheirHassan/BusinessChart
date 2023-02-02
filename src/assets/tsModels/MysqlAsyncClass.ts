@@ -267,6 +267,17 @@ export default class MysqlAsyncClass {
       .distinct("in_det_item_id");
   }
 
+        public async getItemsInDetByMax() {
+            const conn = await this.knexConnection();
+            return conn.select("it_name", "it_id", "in_det_item_id", "it_id_class")
+              .from("tbl_invoice_det")
+               .sum({totalSum:"in_det_qty"})
+              .innerJoin("tbl_item", "tbl_item.it_id", "tbl_invoice_det.in_det_item_id")
+              .groupBy("in_det_item_id")
+              .distinct("in_det_item_id")
+              .orderBy('totalSum','DESC');
+          }
+
 
   /**
    * جلب مبيعات الشهر حسب نوع الفاتوة
@@ -899,6 +910,11 @@ export default class MysqlAsyncClass {
       .orderBy("value", "desc");
 
   }
+
+
+
+
+
 
 
   public async getNotInPosClose(in_list_type_const: string) {

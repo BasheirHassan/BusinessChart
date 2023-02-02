@@ -1,12 +1,11 @@
 <template>
-
   <BackToTopComponents/>
-  <HelperComponents title-helper="معلومة" v-show="!showEmptyData">
-    <p> مثال:جلب مبيعات السبت من كل ايام السنة كاملة - الاحد من كل ايام السنة</p>
+  <HelperComponents title-helper="معلومة" v-show="!showEmptyData" :progres-percinteg="percentage">
+    <p>مثال:جلب مشتريات السبت من كل ايام السنة كاملة - الاحد من كل ايام السنة</p>
   </HelperComponents>
   <EmptyDataComponents v-show="showEmptyData"/>
-  <InfoDataMaxComponents v-show="!showEmptyData" :data-json="isMaxs"/>
-  <InfoStepsComponents v-show="!showEmptyData" type-step="dayInWeek"/>
+  <InfoDataMaxComponents :data-json="isMaxs"/>
+  <InfoStepsComponents type-step="dayinweek" :data-step='days'/>
 
   <template v-for="(item, index) in days">
     <el-row class="p-1">
@@ -17,9 +16,12 @@
                                :is-visable-sorted-data="!cardChartIsLoading[item.days]"
                                :is-visable-icons="!cardChartIsLoading[item.days]"
                                :rotation-label-xaxis="90"
-                               :show-labels-xaxis="true"
                                :show-legend="false"
+                               :show-labels-xaxis="true"
+                               :show-data-labels="true"
                                :data-hash="item.days"
+                               :is-maxs="isMaxs.index === index"
+                               type-chart-bar="area"
                                :chart-data-json="chartDataJson[item.days]"
                                :chart-id="'chartID-'+item.days"
                                :card-title=" ' يوم - ' + $dayNameAr(item.dayName)  "/>
@@ -41,61 +43,65 @@ import InfoStepsComponents from '@/components/InfoStepsComponents.vue';
 
 import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
-import PromiseClass from '@/assets/tsModels/PromiseClass';
 import DataModel from '@/assets/tsModels/DataModel';
 import {toRaw} from 'vue';
+
+
 export default {
-  name      : 'SalesCompareSameDateInWeek',
+  name: 'SalesCompareSameDateInWeek',
   components: {
+
     InfoStepsComponents,
-    BackToTopComponents, CardChartComponents, HelperComponents, EmptyDataComponents, InfoDataMaxComponents},
+    BackToTopComponents, CardChartComponents, HelperComponents, EmptyDataComponents, InfoDataMaxComponents
+  },
   data() {
     return {
-      chartDataJson     : [],
+      chartDataJson: [],
       cardChartIsLoading: [],
-      days              : [],
-      dayName           : [],
-      showEmptyData     : false,
-      isMaxs            : [],
-
+      days: [],
+      showEmptyData: false,
+      isMaxs: [],
+      percentage: {}
     };
   },
 
   async mounted() {
 
-    this.days = await this.$mysqlAsyncClass.getAllDaysOffWeeks(StaticsEnum.purchases);
-    if (this.days.length > 0) {
-      this.loadingData();
-      this.showEmptyData = false;
-    } else {
-      this.showEmptyData = true;
-    }
+    let i = 0;
+    let promiseAll = [];
+    this.$mysqlAsyncClass.getAllDaysOffWeeks(StaticsEnum.purchases).then(async rows => {
+      for (const item of rows) {
+        this.days.push(item);
+        promiseAll[i++] = await this.PromiseMe(item);
+      }
+      if (rows.length <= 0) {
+        this.showEmptyData = true;
+      }
 
+
+      Promise.all(promiseAll).then(data => {
+        console.log('Donnn')
+        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+      });
+    }).catch(err => {
+      console.log(err);
+      this.showEmptyData = true
+    });
 
 
   },
   methods: {
-    loadingData() {
-      let promises;
-      const rawObject = toRaw(this.days);
-      rawObject.forEach(item => {
-        let keyID = item.days;
-        promises =new PromiseClass(resolve => {
-          this.$mysqlAsyncClass.getSalesDayOffWeeks(StaticsEnum.purchases, keyID).then(rows => {
-            this.cardChartIsLoading[keyID] = false;
-            this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
-            resolve(true);
-          });
+    PromiseMe(r) {
+      let keyID = r.days;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesDayOffWeeks(StaticsEnum.purchases, keyID).then(rows => {
+          this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
+          res(this.chartDataJson[keyID]);
         })
       });
-
-       promises.then(v => {
-        //this.$mysqlAsyncClass.closeConnection();
-        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
-      });
+    }
 
 
-    },
   },
 };
 </script>

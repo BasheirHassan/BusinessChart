@@ -1,12 +1,12 @@
 <template>
-<BackToTopComponents/>
+  <BackToTopComponents/>
   <HelperComponents title-helper="معلومة" v-show="!showEmptyData">
     <p>جلب مشتريات من يوم السبت الى يوم الجمعه ومن ثم عرضها حسب رقم الاسبوع</p>
     <p>جلب مشتريات الاسبوع الثاني وعرضها في الاسبوع الثاني</p>
   </HelperComponents>
   <EmptyDataComponents v-show="showEmptyData"/>
   <InfoDataMaxComponents v-show="!showEmptyData" :data-json="isMaxs"/>
-  <InfoStepsComponents   v-show="!showEmptyData" type-step="weeks"/>
+  <InfoStepsComponents v-show="!showEmptyData" type-step="weeks"/>
 
   <template v-for="(item, index) in weeks">
     <el-row class="p-1">
@@ -17,7 +17,7 @@
                                :is-visable-sorted-data="!cardChartIsLoading[item.weeks]"
                                :show-legend="false"
                                :data-hash="item.weeks"
-                               :is-visable-icons ="!cardChartIsLoading[item.weeks]"
+                               :is-visable-icons="!cardChartIsLoading[item.weeks]"
                                :chart-data-json="chartDataJson[item.weeks]"
                                :chart-id="'chartID-'+item.weeks"
                                :card-title=" '  اسبوع - ' + item.weeks"/>
@@ -43,52 +43,62 @@ import {StaticsEnum} from '@/assets/tsModels/StaticsAll';
 import DataModel from '@/assets/tsModels/DataModel';
 import {toRaw} from 'vue';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
+import {collect} from "collect.js";
 
 
 export default {
-  name      : 'PurchaseCompareWeekly',
-  components: {BackToTopComponents, CardChartComponents, EmptyDataComponents, HelperComponents, InfoDataMaxComponents,InfoStepsComponents},
+  name: 'PurchaseCompareWeekly',
+  components: {
+    BackToTopComponents,
+    CardChartComponents,
+    EmptyDataComponents,
+    HelperComponents,
+    InfoDataMaxComponents,
+    InfoStepsComponents
+  },
   data() {
     return {
-      chartDataJson     : [],
+      chartDataJson: [],
       cardChartIsLoading: [],
-      weeks             : [],
-      showEmptyData     : false,
-      isMaxs            : []
+      weeks: [],
+      showEmptyData: false,
+      isMaxs: []
     };
   },
 
   async mounted() {
+    let i = 0;
+    let promiseAll = [];
 
-    this.weeks = await this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.purchases);
-    this.loadingData();
-    this.showEmptyData = this.weeks.length <= 0;
+    this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.purchases).then(async rows => {
+      for (const item of rows) {
+        this.weeks.push(item);
+        promiseAll[i++] =  await this.PromiseMe(item);
+      }
+
+      Promise.all(promiseAll).then((values) => {
+        console.log('Finshhhhhh', values);
+        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+      });
+    }).catch(err => {
+      console.log(err);
+    }).finally(()=>{
+      this.showEmptyData = collect(this.weeks).isEmpty()
+    });
+
 
   },
   methods: {
-    loadingData() {
-      let promises;
-      const rawObject = toRaw(this.weeks);
-      rawObject.forEach(item => {
-        let keyID = item.weeks;
-        promises= new PromiseClass(resolve => {
-          this.$mysqlAsyncClass.getSalesWeeklyByID(StaticsEnum.purchases, keyID).then(rows => {
-            this.cardChartIsLoading[keyID] = false;
-            this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
-            resolve(true);
-
-          })
+    PromiseMe(r) {
+      let keyID = r.weeks;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesWeeklyByID(StaticsEnum.sales, keyID).then(rows => {
+          this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
+          res(this.chartDataJson[keyID]);
         })
-
-      promises.then(v => {
-        //console.log(v, 'vvvvvvvv');
-        //this.$mysqlAsyncClass.closeConnection();
-        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
       });
-    })
-
     }
-  }
+  },
 }
 </script>
 

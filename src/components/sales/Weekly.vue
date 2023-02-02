@@ -36,6 +36,7 @@ import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
 
 import {toRaw} from 'vue';
+import {collect} from "collect.js";
 
 export default {
   name      : 'SalesWeekly',
@@ -53,39 +54,39 @@ export default {
 
 
   methods: {
-    selectItems(data) {
+    async selectItems(data) {
       let self = this;
-      let dataModel = [];
-      let promises;
+      let i = 0;
+      let promiseAll = [];
 
-     // console.log(data, 'data');
-      if (!toRaw(data).length) {
+      if (collect(data).isEmpty()) {
         self.chartDataJson = [];
         return;
       }
 
       this.cardChartIsLoading = true;
-      this.isVisibleIcons = true;
+      this.isVisibleIcons = false;
+
       const rawObject = toRaw(data);
-      rawObject.forEach((item, key) => {
-        promises = new PromiseClass(resolve => {
-         this.$mysqlAsyncClass.getSalesWeekly(item.in_type_const).then(rows => {
-            dataModel.push(new DataJsonChartModel(rows, item.label));
-           console.log(rows)
-            resolve(true);
-          });
+      for (const item of rawObject) {
+        promiseAll[i++] = await this.PromiseMe(item);
+      }
+
+      Promise.all(promiseAll).then((values) => {
+        self.chartDataJson = values;
+        self.cardChartIsLoading = false;
+        this.isVisibleIcons = true;
+      });
+
+
+
+    },
+    PromiseMe(item) {
+      return new Promise((resolve, reject) => {
+        this.$mysqlAsyncClass.getSalesWeekly(item.in_type_const).then(rows => {
+          resolve(new DataJsonChartModel(rows, item.label));
         });
       });
-
-      promises.then(result => {
-        //console.log(dataModel, 'result');
-        self.chartDataJson = dataModel;
-        self.cardChartIsLoading = false;
-      });
-
-
-
-
     }
 
   }

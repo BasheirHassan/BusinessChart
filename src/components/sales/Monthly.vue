@@ -35,6 +35,9 @@ import HelperComponents from '@/components/HelperComponents.vue';
 import DataJsonChartModel from '@/assets/tsModels/DataJsonChartModel';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
 import {toRaw} from 'vue';
+import {StaticsEnum} from "@/assets/tsModels/StaticsAll";
+import DataModel from "@/assets/tsModels/DataModel";
+import {collect} from "collect.js";
 
 export default {
   name      : 'SalesMonthly',
@@ -45,18 +48,19 @@ export default {
       chartDataJson     : null,
       cardChartIsLoading: false,
       isVisibleIcons    : false,
+      dataModel : []
      };
   },
 
 
   methods: {
-    selectItems(data) {
+    async selectItems(data) {
       let self = this;
-      let dataModel = [];
-      let promises;
+      let i = 0;
+      let promiseAll = [];
 
-      //console.log(data, 'data');
-      if (!toRaw(data).length) {
+
+      if (collect(data).isEmpty()) {
         self.chartDataJson = [];
         return;
       }
@@ -64,23 +68,26 @@ export default {
       this.cardChartIsLoading = true;
       this.isVisibleIcons = true;
       const rawObject = toRaw(data);
-      rawObject.forEach((item, key) => {
-        promises = new PromiseClass(resolve => {
-         this.$mysqlAsyncClass.getSalesMonthly(item.in_type_const).then(rows => {
-            dataModel.push(new DataJsonChartModel(rows, item.label, 'MM-YY'));
-            resolve(true);
-           console.log(rows,'rows')
-          });
-        });
-      });
+      for (const item of rawObject) {
+        promiseAll[i++] = await this.PromiseMe(item);
+      }
 
-      promises.then(result => {
-        //console.log(dataModel, 'result');
-        self.chartDataJson = dataModel;
+
+      Promise.all(promiseAll).then((values) => {
+        self.chartDataJson = values;
         self.cardChartIsLoading = false;
       });
 
     },
+
+    PromiseMe(item) {
+      return new Promise((resolve, reject) => {
+            this.$mysqlAsyncClass.getSalesMonthly(item.in_type_const).then(rows => {
+              resolve(new DataJsonChartModel(rows, item.label, 'MM-YY'));
+              console.log(rows, 'rows')
+            });
+          });
+    }
 
   },
 };
