@@ -198,7 +198,7 @@ export default {
       // console.log(toRaw(this.chartDataJson));
       if (toRaw(this.chartDataJson).length > 1) {
         $("[data-key='chartStackBar']").show();
-        console.log("More then 1");
+       // console.log("More then 1");
       } else {
         $("[data-key='chartStackBar']").hide();
       }

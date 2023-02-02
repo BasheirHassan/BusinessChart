@@ -61,24 +61,24 @@ export default {
       pageSize: 56,
       totalItems: 0,
       percentage: 0,
-      i:0,
-      prmoAll:[]
-
     };
   },
   async mounted() {
     this.isLoading =false;
-    this.$mysqlAsyncClass.getItemsInDet(StaticsEnum.sales).then(async rows => {
+   let i=0;
+   let prmoAll=[];
+
+    this.$mysqlAsyncClass.getItemsInDetByMax(StaticsEnum.sales).then(async rows => {
       this.totalItems=rows.length;
       for (let i = 0; i < rows.length; i++) {
-        this.prmoAll[i] = await this.PromiseMe(rows[i], i);
+       prmoAll[i] = await this.PromiseMe(rows[i], i);
       }
 
       if (rows.length <= 0) {
         this.showEmptyData = true;
       }
 
-      Promise.all(this.prmoAll).then((values) => {
+      Promise.all(prmoAll).then((values) => {
         console.log('Finshhhhhh',values);
       });
 
