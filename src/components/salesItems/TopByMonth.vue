@@ -5,7 +5,7 @@
   </HelperComponents>
   <EmptyDataComponents v-show="showEmptyData"/>
   <InfoDataMaxComponents v-show="!showEmptyData" :data-json="isMaxs"/>
-  <InfoStepsComponents v-show="!showEmptyData" type-step="months"/>
+  <InfoStepsComponents v-show="!showEmptyData" :data-step='months' type-step="months"/>
 
   <template v-for="(item, index) in months">
     <el-row class="p-1">
@@ -43,57 +43,61 @@ import {toRaw} from 'vue';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
 import DataModel from '@/assets/tsModels/DataModel';
 import $ from 'jquery';
+import {collect} from "collect.js";
 
 export default {
-  name      : 'SalesItemsTopByDay',
+  name: 'SalesItemsTopByDay',
   components: {
     InfoStepsComponents,
-    BackToTopComponents, HelperComponents, CardChartComponents, EmptyDataComponents, InfoDataMaxComponents},
+    BackToTopComponents, HelperComponents, CardChartComponents, EmptyDataComponents, InfoDataMaxComponents
+  },
   data() {
     return {
-      chartDataJson     : [],
+      chartDataJson: [],
       cardChartIsLoading: [],
-      months            : [],
-      showEmptyData     : false,
-      isMaxs            : [],
-      percentage:{}
+      months: [],
+      showEmptyData: false,
+      isMaxs: [],
+      percentage: {}
 
     };
   },
 
   async mounted() {
+    let i = 0;
+    let promiseAll = [];
 
-    this.months = await this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales);
-    this.loadingData();
-    this.showEmptyData = this.months.length <= 0;
-  },
-  methods: {
-    loadingData() {
-      let promises;
-      const rawObject = toRaw(this.months);
-      //console.log(rawObject);
-      rawObject.forEach(item => {
-        let keyID = item.month;
-        promises = new PromiseClass(resolve => {
-          $.when(this.percentage = {value:keyID,total:rawObject.length-1}).then(()=>{
-            this.$mysqlAsyncClass.getSalesItemByMonthlyID(StaticsEnum.sales, keyID).then(rows => {
-              this.cardChartIsLoading[keyID] = false;
-              this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
-              resolve(true);
+    this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales).then(async rows => {
+      for (const item of rows) {
+        this.months.push(item);
+        promiseAll[i++] = await this.PromiseMe(item);
+      }
 
-            });
-          })
-
-        });
-      });
-
-      promises.then(v => {
-        // console.log(v, 'vvvvvvvv');
+      Promise.all(promiseAll).then((values) => {
         this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
       });
+    }).catch(err => {
+      console.log(err);
+    }).finally((k) => {
+      this.showEmptyData = collect(this.months).isEmpty()
+    });
 
-    },
+
   },
+  methods: {
+    PromiseMe(r) {
+      let keyID = r.month;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesItemByMonthlyID(StaticsEnum.sales, keyID).then(rows => {
+          this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
+          res(this.chartDataJson[keyID]);
+        })
+      });
+    }
+
+
+  },
+
 };
 </script>
 

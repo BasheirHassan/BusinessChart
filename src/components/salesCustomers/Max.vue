@@ -54,7 +54,7 @@ export default {
   },
 
   async mounted() {
-    let i=0;
+    let i=1;
 
     let customers = await this.$mysqlAsyncClass.getCustomers(['0', '1']);
     this.totalItems = customers.length;

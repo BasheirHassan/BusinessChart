@@ -79,7 +79,6 @@
 
     <div v-loading="isLoading" class="card-body" element-loading-text="تحميل .....">
 
-
       <div :class="'apexcharts-css vhh-95 ' +this.$GlobalBlurCss"></div>
 
     </div>
@@ -104,7 +103,7 @@ import AnyChartClass from "@/assets/tsModels/AnyChartClass";
 import { chartTypeConst, exportTypeConst } from "@/assets/tsModels/StaticsAll";
 import { toRaw } from "vue";
 import { collect } from "collect.js";
-import { typeNameChartEnum } from "../assets/tsModels/StaticsAll";
+import { typeNameChartEnum } from "@/assets/tsModels/StaticsAll";
 import Vue3Autocounter from "vue3-autocounter";
 import $ from "jquery";
 
@@ -186,7 +185,6 @@ export default {
     this.anyChartClass.typeChartBar = collect(chartTypeConst).where("type", typeChartBar).first();
     this.anyChartClass.displayHeatMapRows = this.$props.displayHeatMapRows;
     this.anyChartClass.callBackTotalSelectedBar = function(v) {
-      // console.log(v);
       self.isShwoTotalSelectedBar = true;
       self.TotalSelectedBar = v;
     };
@@ -263,5 +261,8 @@ export default {
 <style scoped>
 .el-select {
   width: 300px;
+}
+.apexcharts-css{
+
 }
 </style>

@@ -64,14 +64,13 @@ export default {
   },
   async mounted() {
     this.isLoading = false;
-    let i = 0;
     let promiseAll = [];
 
     this.$mysqlAsyncClass.getItemsInDetByMax(StaticsEnum.sales).then(async rows => {
       this.totalItems = rows.length;
       for (let i = 0; i < rows.length; i++) {
         promiseAll[i] = await this.PromiseMe(rows[i], i);
-        this.percentage = i;
+        this.percentage = i+1;
       }
 
       if (rows.length <= 0) {

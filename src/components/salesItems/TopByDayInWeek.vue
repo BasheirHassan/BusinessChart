@@ -5,7 +5,7 @@
 
   <EmptyDataComponents v-show="showEmptyData"/>
   <InfoDataMaxComponents v-show="!showEmptyData" card-hash="chartID-" :data-json="isMaxs"/>
-  <InfoStepsComponents  v-show="!showEmptyData"  type-step="weeks"/>
+  <InfoStepsComponents  v-show="!showEmptyData" :data-step='weeks' type-step="weeks"/>
   <BackToTopComponents/>
 
   <template v-for="(item, index) in weeks">
@@ -44,6 +44,7 @@ import {toRaw} from 'vue';
 import PromiseClass from '@/assets/tsModels/PromiseClass';
 import DataModel from '@/assets/tsModels/DataModel';
 import $ from 'jquery';
+import {collect} from "collect.js";
 
 export default {
   name      : 'SalesItemsTopByDay',
@@ -60,9 +61,40 @@ export default {
   },
 
   async mounted() {
-    this.weeks = await this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.sales);
-    this.loadingData();
-    this.showEmptyData = this.weeks.length <= 0;
+
+
+
+
+    let i = 0;
+    let promiseAll = [];
+    this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.sales).then(async rows => {
+      for (const item of rows) {
+        this.weeks.push(item);
+        promiseAll[i++] =await this.PromiseMe(item);
+      }
+
+      Promise.all(promiseAll).then((values) => {
+        this.isMaxs = DataModel.getMax(toRaw(this.chartDataJson));
+      });
+    }).catch(err => {
+      console.log(err);
+    }).finally((k)=>{
+      this.showEmptyData = collect(this.weeks).isEmpty()
+    });
+
+
+
+
+
+    // this.weeks = await this.$mysqlAsyncClass.getAllWeeks(StaticsEnum.sales);
+    // this.loadingData();
+    // this.showEmptyData = this.weeks.length <= 0;
+
+
+
+
+
+
   },
   methods: {
     loadingData() {
@@ -89,6 +121,15 @@ export default {
       });
 
     },
+    PromiseMe(r) {
+      let keyID = r.weeks;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesWeeklyByID(StaticsEnum.sales, keyID).then(rows => {
+          this.chartDataJson[keyID] = [new DataJsonChartModel(toRaw(rows), keyID)];
+          res(this.chartDataJson[keyID]);
+        })
+      });
+    }
   },
 };
 </script>

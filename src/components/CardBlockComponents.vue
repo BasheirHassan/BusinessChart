@@ -53,10 +53,13 @@ export default {
   },
 
   watch: {
-    dataBody(newVal, oldVal) {
-      this.isLoading = false;
-
-    }
+    dataBody: {
+      handler: function (val) {
+        this.$props.dataBody=val
+        this.isLoading = false;
+      },
+      immediate: true,
+    },
   }
 
 };

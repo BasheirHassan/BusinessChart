@@ -78,6 +78,7 @@ export default class AnyChartClass {
         self.chartObject.defaultSeriesType(this.typeChartBar.type);
         self.configPieChart(self.chartObject)
         self.configAnyChartType(self.chartObject);
+        self.chartObject.animation({enabled: true, duration: 1000});
         self.chartObject.draw();
         self.addEventListenerResize();
         self.isInited = true;
@@ -336,9 +337,13 @@ export default class AnyChartClass {
             self.chartObject.getSeries(index).meta('sum', sum);
             self.chartObject.getSeries(index).meta('avg', avg);
             self.chartObject.getSeriesAt(index).seriesType(self.typeChartBar.type);
+
         });
+        self.chartObject.animation({enabled: true, duration: 1000});
 
 
+
+        
     }
 
 
@@ -360,6 +365,7 @@ export default class AnyChartClass {
 
             this.configPieChart(chart);
             chart.container(this.unqID);
+            chart.animation({enabled: true, duration: 1000});
             chart.draw();
             this.showDataLabels = false;
             this.showTooltip = true;
@@ -384,6 +390,7 @@ export default class AnyChartClass {
             chart.colorScale(customColorScale);
             chart.labels().useHtml(true);
             chart.container(this.unqID);
+            chart.animation({enabled: true, duration: 1000});
             chart.draw();
 
     }

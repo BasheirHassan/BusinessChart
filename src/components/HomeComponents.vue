@@ -60,6 +60,7 @@
               tooltip-tilte='اجمالي عدد فواتير'
               :data-json='dataSalesAvgMonthly'/>
         </div>
+
         <div class="col">
           <CardChartComponents :is-visable-loading="true"
                                :show-labels-xaxis="false"
@@ -72,17 +73,20 @@
                                chart-id="idSalesAndPurchases"
                                :chart-data-json="dataSalesAndPurchases" :is-visable-icons="false"/>
         </div>
+
         <div class="col">
-          <CardChartComponents :is-visable-loading="true"
-                               :show-labels-xaxis="false"
-                               :show-labels-yaxis="false"
-                               :show-labels="false"
-                               :show-data-labels="false"
-                               :show-legend="false"
-                               :card-title="'اجمالي مبيعات مشتريات شهر - '+ thisMonth"
-                               chart-id="idSalesAndPurchasesThisMonth"
-                               type-chart-bar="pie"
-                               :chart-data-json="dataSalesAndPurchasesThisMonth" :is-visable-icons="false"/>
+
+            <CardChartComponents :is-visable-loading="true"
+                                 :show-labels-xaxis="false"
+                                 :show-labels-yaxis="false"
+                                 :show-labels="false"
+                                 :show-data-labels="false"
+                                 :show-legend="false"
+                                 :card-title="'اجمالي مبيعات مشتريات شهر - '+ thisMonth"
+                                 chart-id="idSalesAndPurchasesThisMonth"
+                                 type-chart-bar="pie"
+                                 :chart-data-json="dataSalesAndPurchasesThisMonth" :is-visable-icons="false"/>
+
         </div>
 
         <div class="col">
@@ -360,8 +364,10 @@ export default {
      */
     async getAppsMonth() {
       let self = this;
+
       this.$mysqlAsyncClass.getSalesMonthly(StaticsEnum.sales).then(rows => {
         self.counters.months = rows.length;
+
         self.dataAppsMonth = [new DataJsonChartModel(rows, 'مبيعات شهرية')];
       }).catch(err => {
         console.log(err);
