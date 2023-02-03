@@ -340,19 +340,18 @@ export default {
         await self.getCountItems();
         await self.getCountCustemers();
         await self.getCountSupplier();
+
+
+       await RegisterApp.checkisRegister().then(v => {
+          this.isRegisterApp = v;
+        });
+
         console.info('Finsh');
       })
 
     });
 
-
     //this.getDataAccountBalance();
-
-
-    RegisterApp.checkisRegister().then(v => {
-      this.isRegisterApp = v;
-    });
-
     this.dbTitle = await StoreConfig.getServerHostDbTitleSelect();
   },
   methods: {

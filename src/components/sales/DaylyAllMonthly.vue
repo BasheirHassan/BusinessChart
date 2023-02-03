@@ -83,6 +83,7 @@ export default {
   async mounted() {
     let i = 0;
     let promiseAll = [];
+
     this.$mysqlAsyncClass.getAllMonths(StaticsEnum.sales).then(async rows => {
       for (const item of rows) {
         this.month.push(item);
@@ -98,9 +99,11 @@ export default {
       });
     }).catch(err => {
       console.log(err);
-    }).finally((k)=>{
+    }).
+    finally((k)=>{
       this.showEmptyData = collect(this.month).isEmpty()
     });
+
   },
   methods: {
     PromiseMe(r) {

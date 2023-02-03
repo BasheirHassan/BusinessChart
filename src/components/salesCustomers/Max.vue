@@ -6,6 +6,16 @@
 
   <EmptyDataComponents v-show="showEmptyData"/>
 
+  <el-row :gutter="12">
+    <el-col :span="24">
+      <CardBlockComponents card-title='اجمالي عملاء' :data-body='totalItems' background-color='#03A9F4'>
+        <template v-slot:any>
+          <progress-percentage :percentage="percentage" :total-items="totalItems"/>
+        </template>
+      </CardBlockComponents>
+    </el-col>
+  </el-row>
+
   <el-row :gutter="20" element-loading-text="تحميل ..." v-loading.fullscreen.lock="isLoading">
 
 
@@ -25,25 +35,36 @@ import BackToTopComponents from '@/components/BackToTopComponents.vue';
 import HelperComponents from '@/components/HelperComponents.vue';
 import EmptyDataComponents from '@/components/EmptyDataComponents.vue';
 import {collect} from 'collect.js';
+import ProgressPercentage from "@/components/progressPercentageComponents.vue";
+import CardBlockComponents from "@/components/CardBlockComponents.vue";
 
 
 export default {
   name      : 'salesCustomersMax',
-  components: {BackToTopComponents, CollapseSyncComponents, HelperComponents, EmptyDataComponents},
+  components: {BackToTopComponents, CollapseSyncComponents, HelperComponents, EmptyDataComponents,ProgressPercentage,CardBlockComponents},
 
   data() {
     return {
       dataJson     : [],
       isLoading    : true,
       showEmptyData: false,
+      totalItems: 0,
+      percentage: 0,
     };
   },
 
   async mounted() {
-    let customers = await this.$mysqlAsyncClass.getCustomers(['0', '1']);
+    let i=0;
 
-    collect(customers).each((item, key) => {
-      this.initList(item);
+    let customers = await this.$mysqlAsyncClass.getCustomers(['0', '1']);
+    this.totalItems = customers.length;
+
+
+
+    collect(customers).each(async (item, key) => {
+      await this.initList(item);
+      this.percentage = i;
+      i++;
     });
 
     this.isLoading = false;
@@ -57,6 +78,7 @@ export default {
       let id = rows.cu_id;
       let name = rows.cu_name;
       let res = await this.$mysqlAsyncClass.getMaxSalesByCustomersID(id);
+
 
       if (res.length <= 0) {
         return;

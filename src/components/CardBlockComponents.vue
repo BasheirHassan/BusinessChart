@@ -13,8 +13,8 @@
         <div class="card-body">
 
           <el-row :gutter="20">
-            <el-col :span="8"> <h5 class="card-title text-truncate">{{ cardTitle }} </h5></el-col>
-            <el-col :span="12"><div class="grid-content ep-bg-purple" />
+            <el-col :span="14"> <h6 class="card-title text-truncate">{{ cardTitle }} </h6></el-col>
+            <el-col :span="6"><div class="grid-content ep-bg-purple" />
               <h5 class="card-title text-truncate">
               <h5 :class="'card-text text-danger '  +this.$GlobalBlurCss " v-show='!isLoading'>
               <vue3-autocounter ref="counter" :pause="true" :startAmount="0" :endAmount="parseInt(dataBody)"

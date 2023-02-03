@@ -182,20 +182,20 @@ const template: Electron.MenuItemConstructorOptions[]  = [
             {
                 label: 'مبيعات مشتريات  -  اسبوعية',
                 click() {
-                    createWindow('sales/weekly', {})
+                    createWindow('sales/weekly', {maximize:true})
                 }
 
             },
             {
                 label: 'مبيعات مشتريات - يومية',
                 click() {
-                    createWindow('sales/dayly', {})
+                    createWindow('sales/dayly', {maximize:true})
                 }
             },
             {
                 label: 'مبيعات مشتريات - ساعة',
                 click() {
-                    createWindow('sales/hourly', {})
+                    createWindow('sales/hourly', {maximize:true})
                 }
             },
             {
@@ -245,13 +245,13 @@ const template: Electron.MenuItemConstructorOptions[]  = [
             {
                 label: 'موسمية',
                 click() {
-                    createWindow('salesCompare/seasons')
+                    createWindow('salesCompare/seasons',{maximize:true})
                 }
             },
             {
                 label: 'مبلغ الفاتورة',
                 click() {
-                    createWindow('salesMoney/Top')
+                    createWindow('salesMoney/Top',{maximize:true})
                 }
             },
 
@@ -291,7 +291,7 @@ const template: Electron.MenuItemConstructorOptions[]  = [
             {
                 label: 'مبلغ الفاتورة',
                 click() {
-                    createWindow('purchaseMoney/Top')
+                    createWindow('purchaseMoney/Top',{maximize:true})
                 }
             },
 
@@ -307,32 +307,32 @@ const template: Electron.MenuItemConstructorOptions[]  = [
             {
                 label: '  شهرية',
                 click() {
-                    createWindow('salescCustomers/monthly')
+                    createWindow('salescCustomers/monthly',{maximize:true})
                 }
             },
             {
                 label: '  اسبوعية',
                 click() {
-                    createWindow('salescCustomers/weekly')
+                    createWindow('salescCustomers/weekly',{maximize:true})
                 }
             },
             {
                 label: ' يومية',
                 click() {
-                    createWindow('salescCustomers/dayly')
+                    createWindow('salescCustomers/dayly',{maximize:true})
                 }
             },
 
             {
                 label: ' بالساعة',
                 click() {
-                    createWindow('salescCustomers/hourly')
+                    createWindow('salescCustomers/hourly',{maximize:true})
                 }
             },
             {
                 label: ' اكثر مبيعا',
                 click() {
-                    createWindow('salescCustomers/max')
+                    createWindow('salescCustomers/max',{maximize:true})
                 }
             },
         ]
@@ -343,26 +343,26 @@ const template: Electron.MenuItemConstructorOptions[]  = [
             {
                 label: '  شهرية',
                 click() {
-                    createWindow('salesItems/monthly')
+                    createWindow('salesItems/monthly',{maximize:true})
                 }
             },
             {
                 label: '  اسبوعية',
                 click() {
-                    createWindow('salesItems/weekly')
+                    createWindow('salesItems/weekly',{maximize:true})
                 }
             },
             {
                 label: ' يومية',
                 click() {
-                    createWindow('salesItems/dayly')
+                    createWindow('salesItems/dayly',{maximize:true})
                 }
             },
 
             {
                 label: ' بالساعة',
                 click() {
-                    createWindow('salesItems/hourly')
+                    createWindow('salesItems/hourly',{maximize:true})
                 }
             },
             {

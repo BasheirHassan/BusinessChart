@@ -7,17 +7,15 @@
   <EmptyDataComponents v-show="showEmptyData"/>
 
 
-
-
   <el-row :gutter="12">
-    <el-col :span="24"><CardBlockComponents card-title='اجمالي منتجات' :data-body='totalItems' background-color='#03A9F4'>
-      <template v-slot:any >
-        <progress-percentage :percentage="percentage" :total-items="totalItems"/>
-      </template>
-    </CardBlockComponents></el-col>
+    <el-col :span="24">
+      <CardBlockComponents card-title='اجمالي منتجات' :data-body='totalItems' background-color='#03A9F4'>
+        <template v-slot:any>
+          <progress-percentage :percentage="percentage" :total-items="totalItems"/>
+        </template>
+      </CardBlockComponents>
+    </el-col>
   </el-row>
-
-
 
 
   <div v-loading.fullscreen.lock="isLoading">
@@ -50,7 +48,8 @@ export default {
   name: "SalesItemsMax",
   components: {
     CardBlockComponents,
-    ProgressPercentage, CollapseSyncComponents, BackToTopComponents, HelperComponents, EmptyDataComponents},
+    ProgressPercentage, CollapseSyncComponents, BackToTopComponents, HelperComponents, EmptyDataComponents
+  },
 
   data() {
     return {
@@ -64,22 +63,23 @@ export default {
     };
   },
   async mounted() {
-    this.isLoading =false;
-   let i=0;
-   let prmoAll=[];
+    this.isLoading = false;
+    let i = 0;
+    let promiseAll = [];
 
     this.$mysqlAsyncClass.getItemsInDetByMax(StaticsEnum.sales).then(async rows => {
-      this.totalItems=rows.length;
+      this.totalItems = rows.length;
       for (let i = 0; i < rows.length; i++) {
-       prmoAll[i] = await this.PromiseMe(rows[i], i);
+        promiseAll[i] = await this.PromiseMe(rows[i], i);
+        this.percentage = i;
       }
 
       if (rows.length <= 0) {
         this.showEmptyData = true;
       }
 
-      Promise.all(prmoAll).then((values) => {
-        console.log('Finshhhhhh',values);
+      Promise.all(promiseAll).then((values) => {
+        console.log('Finshhhhhh', values);
       });
 
     }).catch(err => {
@@ -88,38 +88,42 @@ export default {
     });
 
 
-
-
   },
 
   methods: {
     PromiseMe(r, id) {
       let keyID = r.it_id;
-     return  new Promise((res, rej) => {
-          this.$mysqlAsyncClass.getSalesItemAllByID([keyID]).then(async rows => {
-            this.chartDataJson = [new DataJsonChartModel(toRaw(rows), id)];
-            let resultList = await this.initList(rows);
-            this.dataJson.push(resultList);
-            this.i += 1;
-            this.percentage = this.i;
-            res(this.chartDataJson);
-          });
+      let self = this;
+      return new Promise((res, rej) => {
+        this.$mysqlAsyncClass.getSalesItemAllByID([keyID]).then(async rows => {
+          self.chartDataJson = [new DataJsonChartModel(toRaw(rows), id)];
+          let resultList = await this.initList(rows);
+          self.dataJson.push(resultList);
+          res(this.chartDataJson);
+        });
       });
 
     },
 
 
-   async initList(rows) {
+    async initList(rows) {
       let allItems = [];
       let badgeColor = ["bg-primary", "bg-secondary", "bg-success", "bg-danger", "bg-warning", "bg-info"];
-     await collect(rows).map(item => {
+      await collect(rows).map(item => {
         let cssRandom = badgeColor[Math.floor(Math.random() * badgeColor.length)];
-        allItems.push( {"x": item.x, "value": item.value, "tooltip": item.tooltip, it_name: item.it_name, css: cssRandom});});
+        allItems.push({
+          "x": item.x,
+          "value": item.value,
+          "tooltip": item.tooltip,
+          it_name: item.it_name,
+          css: cssRandom
+        });
+      });
       return allItems;
     },
 
 
-}
+  }
 };
 </script>
 

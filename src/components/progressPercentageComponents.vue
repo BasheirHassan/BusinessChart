@@ -1,7 +1,9 @@
-<template>
-    <el-progress :percentage="percentageValue || 0" :total-items="totalItems" type="circle" width="90" />
-</template>
 
+<template>
+  <div v-show="percentageValue>0">
+    <el-progress  :percentage="percentageValue || 0" :total-items="totalItems" type="circle" width="90"/>
+  </div>
+</template>
 <script>
 
 export default {
@@ -10,31 +12,31 @@ export default {
     totalItems: Number,
     percentage: Number,
   },
-data(){
-    return{
-      percentageValue:0
+  data() {
+    return {
+      percentageValue: 0
     }
-},
+  },
 
   watch: {
     totalItems: {
       handler: function (val) {
-          this.percentageCalc(val);
+        console.log(val, 'total Items')
+        this.percentageCalc(val);
       },
       immediate: true,
     },
     percentage: {
       handler: function (val) {
-        console.log(val,'VVVVVV')
-          this.percentageCalc(val);
+        console.log(val, 'percentage Value')
+        this.percentageCalc(val);
       },
       immediate: true,
     },
   },
   methods: {
-    percentageCalc(partialValue) {
-
-      this.percentageValue = Math.round((100 * partialValue) / this.totalItems);
+    percentageCalc(value) {
+      this.percentageValue = Math.round((100 * value) / this.totalItems);
     }
   }
 };
