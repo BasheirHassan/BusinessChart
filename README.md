@@ -1,7 +1,7 @@
 # BusinessChart
 <br/><br/><br/>
 **يتطابق فقط مع برنامج - كريستال للمحاسبة والمستودعات**
-<img src="images/main.png">
+<img src="/Screenshots/main.png">
 <br/><br/><br/>
 <ol type="1">
 <li style="color: #1c0fce">اضافة التاريخ الهجري</li>
