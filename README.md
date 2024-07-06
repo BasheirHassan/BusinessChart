@@ -1,5 +1,8 @@
 # BusinessChart
 <br/><br/><br/>
+[رابط تحميل النسخة
+](https://github.com/BasheirHassan/BusinessChart/releases)
+
 **يتطابق فقط مع برنامج - كريستال للمحاسبة والمستودعات**
 <br/><br/><br/><br/>
 <img src="/Screenshots/main.png">
