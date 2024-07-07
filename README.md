@@ -7,6 +7,8 @@
 <br/><br/><br/><br/>
 <img src="/Screenshots/img.png">
 <br/><br/><br/><br/>
+<img src="/Screenshots/monthly.png">
+<br/><br/><br/><br/>
 
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/wMyzzQ-6I-g/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
