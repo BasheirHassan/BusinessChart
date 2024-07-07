@@ -5,7 +5,7 @@
 
 **يتطابق فقط مع برنامج - كريستال للمحاسبة والمستودعات**
 <br/><br/><br/><br/>
-<img src="/Screenshots/main.png">
+<img src="/Screenshots/img.png">
 <br/><br/><br/><br/>
 
 
