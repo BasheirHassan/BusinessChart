@@ -1,7 +1,7 @@
 # BusinessChart
 
-رابط تحميل النسخة
-
+[رابط تحميل النسخة
+](https://github.com/BasheirHassan/BusinessChart/releases)
 ![image](https://github.com/BasheirHassan/BusinessChart/assets/6355712/e9f5c805-e28c-433e-9504-e903e08c1e94)
 
 
