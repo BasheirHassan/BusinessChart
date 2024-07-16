@@ -1,12 +1,12 @@
 # BusinessChart
 
-[
-رابط تحميل النسخة
+[رابط تحميل النسخة
+](https://github.com/BasheirHassan/BusinessChart/releases)
 
 ![image](https://github.com/user-attachments/assets/dbc43bbd-95ba-468c-85dd-6a39438cb1c3)
 
 
-](https://github.com/BasheirHassan/BusinessChart/releases)
+
 ![image](https://github.com/BasheirHassan/BusinessChart/assets/6355712/e9f5c805-e28c-433e-9504-e903e08c1e94)
 
 
